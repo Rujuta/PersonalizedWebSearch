@@ -34,21 +34,20 @@
 \maketitle
 
 \section{Abstract}
-We are trying to improve web search results, by re-ranking pages that are returned by a web search by personalizing them according to a user's preferences. \newline
-We plan to include both short term and long term user search history in order to generate the new rankings. The short term history is the user's search behavior (dwell time and click through data) in the same search session, whereas long term refers to a user's search behavior observed over multiple sessions over a long term period.\newline 
-Currently, there is literature demonstrating re-ranking based only on long term user history as well as short term and long term history. There are papers explaining that personalized search would be ideal solely in case of ambiguity of search queries. We are trying to identify this factor when we re-rank our documents. 
- 
-
+This project aims to improve web search results through personalization. It involves re-ranking of results on the basis of user profiles comprising their past searches and actions. \newline
+The features used are based upon the short term and long term user search history. Short term history is the user's search queries and actions(dwell time for URL and clicks on URL) in the same search session. Long term refers to a user's search behavior observed over multiple sessions over a long term period.\newline 
+This problem lies in the Learning to Rank class of problems. 
 
 \section{Methods}
-% Explain the methods you will be using and why they are appropriate.- ML methods - algorithm? Objective function? Evaluation techniques? 
+\subsection{Learning and Prediction} The problem of re-ranking web search results to obtain personalized results falls under Learning to Rank which involves use of machine learning for ranking in information retrieval. This approach is achieved usually through Pointwise, Pairwise or Listwise approach. \texttt{<ADD>}
+We will start by implementing LambdaMART which is a listwise Learning to Rank algorithm as it has been ranked
 \subsection{Evaluation} The task involves re-ranking of search results in accordance with user's history. Therefore, the evaluation metric used is NDCG (Normalized Discounted Cumulative Gain). It is a metric between 0 and 1 that evaluates the ranking order. It is given by:
 \begin{flalign*}
 NDCG_k = \frac{DCG_k}{IDCG_k}
 \end{flalign*}
 where k denotes documents uptil rank k and DCG is Discounted Cumulative Gain, given by:
 \begin{flalign*}
-DCG_k = rel_1 + \sum_{i=2}^p{\frac{rel_i}{log_2(i)}}
+DCG_k = \sum_{i=1}^k{\frac{2^{rel_i} - 1}{log_2(i + 1)}}
 \end{flalign*}
 where rel is the actual relevance of the document provided by labels and i is the rank given by the algorithm. Thus, a highly relevant document ranked later in the list will result in penalization and a low DCG. The Ideal DCG or IDCG gives the best ranking in accordance with the relevance values. Therefore, NDCG = 1 when the ideal ranking is obtained. For our experiment, NDCG is calculated on the newly ranked list of URLs created by the algorithm. Thus, the learned ranking are evaluated with respect to the relevance labels obtained on the basis of clicks and dwell time on a document of a user for a particular query.
 
