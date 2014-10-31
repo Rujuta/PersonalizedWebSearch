@@ -20,7 +20,7 @@
 
 \title{Personalized Web Search}
 
-\author{Biman Gujral (JHED, email address), Rujuta Deshpande (rdeshpa3,rdeshpa3@jhu.edu)}
+\author{Biman Gujral (bgujral1, bgujral1@jhu.edu), Rujuta Deshpande (rdeshpa3,rdeshpa3@jhu.edu)}
 \date{10/31/2014}
 
 \begin{document}
@@ -33,6 +33,15 @@ We are trying to improve web search results, by re-ranking pages that are return
 
 \section{Methods}
 % Explain the methods you will be using and why they are appropriate.- ML methods - algorithm? Objective function? Evaluation techniques? 
+\subsection{Evaluation} The task involves re-ranking of search results in accordance with user's history. Therefore, the evaluation metric used is NDCG (Normalized Discounted Cumulative Gain). It is a metric between 0 and 1 that evaluates the ranking order. It is given by:
+\begin{flalign*}
+NDCG_k = \frac{DCG_k}{IDCG_k}
+\end{flalign*}
+where k denotes documents uptil rank k and DCG is Discounted Cumulative Gain, given by:
+\begin{flalign*}
+DCG_k = rel_1 + \sum_{i=2}^p{\frac{rel_i}{log_2(i)}}
+\end{flalign*}
+where rel is the actual relevance of the document provided by labels and i is the rank given by the algorithm. Thus, a highly relevant document ranked later in the list will result in penalization and a low DCG. The Ideal DCG or IDCG gives the best ranking in accordance with the relevance values. Therefore, NDCG = 1 when the ideal ranking is obtained. For our experiment, NDCG is calculated on the newly ranked list of URLs created by the algorithm. Thus, the learned ranking are evaluated with respect to the relevance labels obtained on the basis of clicks and dwell time on a document of a user for a particular query.
 
 \section{Resources}
 % What resources will you use and how will you get them? - Libraries, Data etc 
