@@ -20,7 +20,7 @@
 \textheight 240mm
 \textwidth 160mm
 
-\parskip 1pt 
+\parskip 12pt 
 \setlength{\parindent}{0in}
 
 \pagestyle{myheadings} 
@@ -61,29 +61,30 @@ We plan to use Python for our implementation and scikit-learn for any machine le
 We might use a database to store our learned parameters - SQLite/MongoDB
 \section{Milestones}
 \subsection{Must achieve}
-Evaluation is NDCG and we aim to achieve an ordering of the URLs sorted according to decreasing relevance for a particular user. This would be reflected by an NDCG score close to 1.     
+Our aim is to re-rank the returned URLs to obtain a high NDCG score.  
 \subsection{Expected to achieve}
-We intend to do a comparitive study of the algorithm we are using - LambdaMART with at least two other 'Learning to Rank' algorithms that we think would suit our problem. 
+
 \subsection{Would like to achieve}
-The ideal expected NDCG score is around 0.8065. We would like to re-engineer some features and possibly modify the algorithm to achieve a higher score.  
+Comparison of various machine learning algorithms used for re-ranking. A study of whether long term history alone can be useful for making predictions. 
+
 \section{Final Writeup}
-\subsection*{•}
-\vspace{-5mm}
-\begin{itemize}\setlength{\itemsep}{-5pt}
-\item Abstract and General Approach
-\item Related work and our approach in comparison to them
-\item Explanation of Feature Engineering, Algorithm and Evaluation metrics  
+The final write up will consist of the following:\newline
+\begin{itemize}
+\item Abstract
+\item Related work
+\item Our approach 
+\item Methodology
+\item Evaluation Technique
+\item Graphs
+\item References
 \end{itemize}
-\noindent
+
 \section{Bibliography}
-\subsection*{•}
-\vspace{-5mm}
-\begin{enumerate}\setlength{\itemsep}{-5pt}
+\begin{itemize}
+\item Milad Shokouhi, Ryen W. White, Paul Bennett, and Filip Radlinski. Fighting search engine amnesia: reranking repeated results. In Proceedings of the 36th international ACM SIGIR conference on Research and development in information retrieval (SIGIR '13).
 \item David Sontag, Kevyn Collins-Thompson, Paul N. Bennett, Ryen W. White, Susan Dumais, and Bodo Billerbeck. Probabilistic models for personalizing web search. In Proceedings of the fifth ACM international conference on Web search and data mining (WSDM '12).
 \item Zhicheng Dou, Ruihua Song, and Ji-Rong Wen.  A large-scale evaluation and analysis of personalized search strategies. In Proceedings of the 16th international conference on World Wide Web (WWW '07).
-\item Learning to Rank \texttt{http://en.wikipedia.org/wiki/Learning\_to\_rank}
-\item Dataiku's winning Solution to the problem \texttt{http://research.microsoft.com/en-us/um/people/nickcr/wscd2014/papers/wscdchallenge2014dataiku.pdf}
-
-\end{enumerate}
+\item Feng Qiu and Junghoo Cho. Automatic identification of user interest for personalized search. In Proceedings of the 15th international conference on World Wide Web (WWW '06).
+\end{itemize}
 
 \end{document}
