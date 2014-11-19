@@ -18,30 +18,30 @@
 \evensidemargin 5mm
 \topmargin -20mm
 \textheight 240mm
-\textwidth 160mm
+\textwidth 165mm
 
-\parskip 12pt 
+\parskip 1pt 
 \setlength{\parindent}{0in}
 
 \pagestyle{myheadings} 
 
-\title{Personalized Web Search}
-
-\author{Biman Gujral (bgujral1, bgujral1@jhu.edu), Rujuta Deshpande (rdeshpa3,rdeshpa3@jhu.edu)}
-\date{10/31/2014}
+\title{\vspace{-18mm}CS600.475: Proposal\\
+\Large{Machine Learning Systems: Personalized Web Search}}
+\author{\normalsize{Biman Gujral (bgujral1, bgujral1@jhu.edu) \hspace{5 mm}  Rujuta Deshpande (rdeshpa3,rdeshpa3@jhu.edu)}\\
+\small{October 31, 2014}}
+\date{}
 
 \begin{document}
 \maketitle
 
 \section{Abstract}
 This project aims to improve web search results through personalization. It involves re-ranking of results on the basis of user profiles comprising their past searches and actions. \newline
-The features used are based upon the short term and long term user search history. Short term history is the user's search queries and actions(dwell time for URL and clicks on URL) in the same search session. Long term refers to a user's search behavior observed over multiple sessions over a long term period.\newline 
-This problem lies in the Learning to Rank class of problems. 
+The features used are based upon the short term and long term user search history. Short term history is the user's search queries and actions(dwell time for URL and clicks on URL) in the same search session. Long term refers to a user's search behavior observed over multiple sessions over a long term period.This problem lies in the Learning to Rank class of problems.
 
 \section{Methods}
-\subsection{Learning and Prediction} The problem of re-ranking web search results to obtain personalized results falls under Learning to Rank which involves use of machine learning for ranking in information retrieval. This approach is achieved usually through Pointwise, Pairwise or Listwise approach. \texttt{<ADD>}
-We will start by implementing LambdaMART which is a listwise Learning to Rank algorithm as it has been ranked
-\subsection{Evaluation} The task involves re-ranking of search results in accordance with user's history. Therefore, the evaluation metric used is NDCG (Normalized Discounted Cumulative Gain). It is a metric between 0 and 1 that evaluates the ranking order. It is given by:
+\subsection{Learning and Prediction} The problem of re-ranking web search results to obtain personalized results falls under Learning to Rank which involves algorithms to generate rankings for information retrieval based on rankings in training data. These algorithms are usually implemented using either Pointwise, Pairwise or Listwise approach. We will start by implementing LambdaMART, a listwise approach, as it has been observed to perform the best in the paper that we are initially following. 
+ 
+\subsection{Evaluation} The evaluation metric used is NDCG (Normalized Discounted Cumulative Gain). It is a metric between 0 and 1 that evaluates the ranking order. It is given by:
 \begin{flalign*}
 NDCG_k = \frac{DCG_k}{IDCG_k}
 \end{flalign*}
@@ -49,42 +49,40 @@ where k denotes documents uptil rank k and DCG is Discounted Cumulative Gain, gi
 \begin{flalign*}
 DCG_k = \sum_{i=1}^k{\frac{2^{rel_i} - 1}{log_2(i + 1)}}
 \end{flalign*}
-where rel is the actual relevance of the document provided by labels and i is the rank given by the algorithm. Thus, a highly relevant document ranked later in the list will result in penalization and a low DCG. The Ideal DCG or IDCG gives the best ranking in accordance with the relevance values. Therefore, NDCG = 1 when the ideal ranking is obtained. For our experiment, NDCG is calculated on the newly ranked list of URLs created by the algorithm. Thus, the learned ranking are evaluated with respect to the relevance labels obtained on the basis of clicks and dwell time on a document of a user for a particular query.
+where rel is the actual relevance of the document provided by labels and i is the rank given by the algorithm. Thus, a highly relevant document ranked later in the list will result in penalization and a low DCG. The Ideal DCG or IDCG gives the best ranking in accordance with the relevance values. Therefore, NDCG = 1 when the ideal ranking is obtained. 
 
 \section{Resources}
-% What resources will you use and how will you get them? - Libraries, Data etc 
-Our project is essentially a kaggle competition. Hence, we have obtained the data from kaggle itself. It consists of the web search logs of Yandex, a Russian search engine, collected over a period of 30 days. The first 27 days form the train data and the remaining 3 days form the test data. \newline
-The training data is a stream of logs. Each log line includes a SESSION ID,a type of record  - which essentially indicates the type of log (query or click or session meta data). Based on the type of record, there is a USER ID, QUERY ID, URL ID. The field TIMEPASSED in the record, indicates the time that has passed uptill that record, from the start of that session. 
+\subsection{Data}
+Our project idea is obtained from a Kaggle competition. Hence, data is taken from Kaggle. It consists of web search logs of Yandex, a Russian search engine, collected over a period of 30 days. The first 27 days form the train data and the remaining 3 days form the test data. \newline
+The training data is a stream of logs. Each log line includes a SESSION ID, a type of record  - which indicates if it is information about a query(Q), a click(C) or meta data(M). Based on the type of record, there are other fields like \textsl{UserID, QueryID and terms, URLID-DomainID and SERPID}. The field \textsl{TimePassed}, indicates the time that has passed since sessions start until the click was made which helps compute the dwell time.
 
 \subsection{Tools}
-We plan to use Python for our implementation and scikit-learn for any machine learning libraries we might need. \newline
-We might use a database to store our learned parameters - SQLite/MongoDB
+We plan to use Python for algorithm implementation and scikit-learn for any machine learning libraries we may need. We may also use a database to work with the large datasets and store our learned parameters - SQLite.
+
 \section{Milestones}
 \subsection{Must achieve}
-Our aim is to re-rank the returned URLs to obtain a high NDCG score.  
+Since NDCG is used as evaluation metrics, we aim to achieve ordering of the URLs sorted according to decreasing relevance for a particular user. This would be reflected by an NDCG score close to 1. We will attempt to achieve this using LambdaMART algorithm as mentioned above.   
 \subsection{Expected to achieve}
-
+Post LambdaMART implementation, we intend to do a comparative sttudy with other 'Learning to Rank' algorithms that are suitable for this task in our opinion. 
 \subsection{Would like to achieve}
-Comparison of various machine learning algorithms used for re-ranking. A study of whether long term history alone can be useful for making predictions. 
-
-\section{Final Writeup}
-The final write up will consist of the following:\newline
-\begin{itemize}
-\item Abstract
-\item Related work
-\item Our approach 
-\item Methodology
-\item Evaluation Technique
-\item Graphs
-\item References
+The highest achieved NDCG score is 0.80725 currently. We would like to re-engineer and/or add new features and possibly modify the algorithm to achieve a higher score.
+\section{Final Writeup} The final writeup will disuss in detail the algorithms and experimental setup and the results will be presented. Some broad headers will be:\\
+\vspace{-5mm} 
+\begin{itemize}\setlength{\itemsep}{-5pt}
+\item Abstract and General Approach
+\item Related work and our approach in comparison to them
+\item Explanation of Feature Engineering, Algorithm, Evaluation metrics and Result  
 \end{itemize}
-
+\noindent
 \section{Bibliography}
-\begin{itemize}
-\item Milad Shokouhi, Ryen W. White, Paul Bennett, and Filip Radlinski. Fighting search engine amnesia: reranking repeated results. In Proceedings of the 36th international ACM SIGIR conference on Research and development in information retrieval (SIGIR '13).
+\subsection*{•}
+\vspace{-5mm}
+\begin{enumerate}\setlength{\itemsep}{-5pt}
 \item David Sontag, Kevyn Collins-Thompson, Paul N. Bennett, Ryen W. White, Susan Dumais, and Bodo Billerbeck. Probabilistic models for personalizing web search. In Proceedings of the fifth ACM international conference on Web search and data mining (WSDM '12).
 \item Zhicheng Dou, Ruihua Song, and Ji-Rong Wen.  A large-scale evaluation and analysis of personalized search strategies. In Proceedings of the 16th international conference on World Wide Web (WWW '07).
-\item Feng Qiu and Junghoo Cho. Automatic identification of user interest for personalized search. In Proceedings of the 15th international conference on World Wide Web (WWW '06).
-\end{itemize}
+\item Learning to Rank \texttt{http://en.wikipedia.org/wiki/Learning\_to\_rank}
+\item Dataiku's winning Solution to the problem \texttt{http://research.microsoft.com/en-us/um/ \\ people/nickcr/wscd2014/papers/wscdchallenge2014dataiku.pdf}
+
+\end{enumerate}
 
 \end{document}

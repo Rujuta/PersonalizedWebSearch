@@ -4,8 +4,8 @@ from collections import OrderedDict
 
 search_logs=[]
 query_counts=defaultdict(int)
-user_objects=defaultdict(list)
-query_terms=defaultdict(int)
+user_objects=defaultdict(list)      #UserID: [search_log_member]
+query_terms=defaultdict(int)        #QueryID: [no_of_terms]
 
 
 """ This function reads the train file and 
@@ -62,15 +62,15 @@ The file's format is Score, QueryID, Features"""
 def create_input_file(userid, sessions_list):
     f=open("user_train_files/"+userid,'w')
     query_doc=OrderedDict() #a dictionary keyed by query-doc combination
-    for line in sessions_list:
+    for line in sessions_list:                  ##sessions of that user
         items = line.split()
         if items[2] == 'Q':
             rank=1
             for doc in items[6:]:
-                key=(items[4],doc)
+                key=(items[4],doc)          ##items[4]: queryID
                 if key not in query_doc.keys():
                     query_doc[key]=OrderedDict()
-                query_doc[key]['rank']=rank
+                query_doc[key]['rank']=rank         ##nonPersonalizedRank
                 rank+=1
      
     # Fill in the number of times an item has been queried for
