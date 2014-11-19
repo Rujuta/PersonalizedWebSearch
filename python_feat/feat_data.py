@@ -1,14 +1,5 @@
 #! /usr/bin/env python
-class User:
-    def __init__(self, user_id):
-        self._user_id = user_id
-    def get_all_queries(self, user_id):
-        #Add code here
-    def get_queries_by_session(self, user_id):
-        #Add code here
-    def get_preferred_domains(self, user_id):
-        #Add code here
-        
+       
 class Session:
     def __init__(self, session_id):
         self._session_id = session_id
@@ -20,14 +11,8 @@ class Domain:
         self._domain_id = domain_id
         self.urls_in_domain = []
 
-class Query:
-    def __init__(self, query_id, num):
-        self._query_id = query_id
-        self.returned_in_sessions = []
-        self.num_terms = num        ###make private?
-
 class Click:
-    def __init__(self, url_id, dwell_time):
+    def __init__(self, url_id, dwell_time,obj_url_query_session):
         self.url_id = url_id        ###make private?
         self.dwell_time = dwell_time        ###make private?
 

@@ -60,7 +60,7 @@ def get_terms_in_query():
 """ Creates a file per user to be fed into rank net
 The file's format is Score, QueryID, Features"""
 def create_input_file(userid, sessions_list):
-    f=open(userid,'w')
+    f=open("user_train_files/"+userid,'w')
     query_doc=OrderedDict() #a dictionary keyed by query-doc combination
     for line in sessions_list:
         items = line.split()
