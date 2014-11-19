@@ -61,11 +61,12 @@ We plan to use Python for algorithm implementation and scikit-learn for any mach
 
 \section{Milestones}
 \subsection{Must achieve}
-Since NDCG is used as evaluation metrics, we aim to achieve ordering of the URLs sorted according to decreasing relevance for a particular user. This would be reflected by an NDCG score close to 1. We will attempt to achieve this using LambdaMART algorithm as mentioned above.   
+Since NDCG is used as evaluation metrics, we aim to achieve ordering of the URLs sorted according to decreasing relevance for a particular user. This would be reflected by an NDCG score close to 1. We will attempt to achieve this using the LambdaMART algorithm. We will use the ranklib library's Java implementation of LambdaMART for our task. 
 \subsection{Expected to achieve}
-Post LambdaMART implementation, we intend to do a comparative sttudy with other 'Learning to Rank' algorithms that are suitable for this task in our opinion. 
+The Kaggle competition winners have experimented with various features - both user specific and global. Some of them are the non-personalized rank of the URL, the frequency of query, the position of the query within the user's session, whether the URL has been missed or skipped, the relevance of the snippet displayed in search results and the like. In total, they have used about 90 features. Many features are obtained as a conditional probability of getting a URL conditioned on some predicate. This predicate is a function of the a number of global and user specific variables. \newline
+Our aim is to experiment with a subset of these features and compare the accuracy we achieve. We would be able to determine which features influence ranking greatly and whicj don't. We also plan to use not just LambdaMART but a few other Learning to Rank algorithms - RankNet, AdaRank, Random Forests and compare their results to the ones returned by LambdaMART.
 \subsection{Would like to achieve}
-The highest achieved NDCG score is 0.80725 currently. We would like to re-engineer and/or add new features and possibly modify the algorithm to achieve a higher score.
+One of the papers we read, spoke about whether personalization is necessary for every query. We would like to improve upon the search results, by only personalizing when needed. Thus, at all times, we would get optimum results. 
 \section{Final Writeup} The final writeup will disuss in detail the algorithms and experimental setup and the results will be presented. Some broad headers will be:\\
 \vspace{-5mm} 
 \begin{itemize}\setlength{\itemsep}{-5pt}
