@@ -13,22 +13,32 @@
 \usepackage{tikz}
 \usepackage{amsmath}
 \usepackage{amssymb}
+\usepackage[left=3cm,right=2cm,top=3cm,bottom=2cm]{geometry}
+
+\usepackage{fancyhdr} 
+\fancyhead{}
+\fancyfoot{}
+\fancyfoot[R]{\thepage}
+\fancypagestyle{plain}{
+    \renewcommand{\headrulewidth}{0pt}
+    \fancyhf{}
+    \fancyfoot[R]{\thepage}}
 
 \oddsidemargin 0mm
 \evensidemargin 5mm
-\topmargin -20mm
-\textheight 240mm
+\topmargin -30mm
+\textheight 259mm
 \textwidth 165mm
 
 \parskip 1pt 
 \setlength{\parindent}{0in}
 
-\pagestyle{myheadings} 
+\pagestyle{fancy} 
 
-\title{\vspace{-18mm}CS600.475: Proposal\\
+\title{\vspace{-12mm} CS600.475: Proposal Version 1.1\\
 \Large{Machine Learning Systems: Personalized Web Search}}
 \author{\normalsize{Biman Gujral (bgujral1, bgujral1@jhu.edu) \hspace{5 mm}  Rujuta Deshpande (rdeshpa3,rdeshpa3@jhu.edu)}\\
-\small{October 31, 2014}}
+\small{November 19, 2014}}
 \date{}
 
 \begin{document}
@@ -36,10 +46,10 @@
 
 \section{Abstract}
 This project aims to improve web search results through personalization. It involves re-ranking of results on the basis of user profiles comprising their past searches and actions. \newline
-The features used are based upon the short term and long term user search history. Short term history is the user's search queries and actions(dwell time for URL and clicks on URL) in the same search session. Long term refers to a user's search behavior observed over multiple sessions over a long term period.This problem lies in the Learning to Rank class of problems.
+The features used are based upon the short term and long term user search history. Short term history is the user's search queries and actions in the same search session. Long term refers to a user's search behavior over multiple sessions.This problem lies in the Learning to Rank class of problems.
 
 \section{Methods}
-\subsection{Learning and Prediction} The problem of re-ranking web search results to obtain personalized results falls under Learning to Rank which involves algorithms to generate rankings for information retrieval based on rankings in training data. These algorithms are usually implemented using either Pointwise, Pairwise or Listwise approach. We will do a feature analysis by comparing performances with different feature combinations and Learning to Rank algorithms. These are discussed in more detail in Milestones. 
+\subsection{Learning and Prediction} The problem of re-ranking web search results for personalization falls under Learning to Rank which involves algorithms that rank new retrieval results based on rankings in training data. We will do a feature analysis by comparing performances with different feature combinations and Learning to Rank algorithms. These are discussed in more detail in Milestones. 
  
 \subsection{Evaluation} The evaluation metric used is NDCG (Normalized Discounted Cumulative Gain). It is a metric between 0 and 1 that evaluates the ranking order. It is given by:
 \begin{flalign*}
@@ -49,23 +59,23 @@ where k denotes documents uptil rank k and DCG is Discounted Cumulative Gain, gi
 \begin{flalign*}
 DCG_k = \sum_{i=1}^k{\frac{2^{rel_i} - 1}{log_2(i + 1)}}
 \end{flalign*}
-where rel is the actual relevance of the document provided by labels and i is the rank given by the algorithm. Thus, a highly relevant document ranked later in the list will result in penalization and a low DCG. The Ideal DCG or IDCG gives the best ranking in accordance with the relevance values. Therefore, NDCG = 1 when the ideal ranking is obtained. 
+where rel is the actual relevance of the document provided by labels and i is the rank given by the algorithm. Thus, a highly relevant document ranked later in the list results in penalization and a low DCG. The Ideal DCG or IDCG gives the best ranking in accordance with the relevance values. Therefore, NDCG = 1 when the ideal ranking is obtained. 
 
 \section{Resources}
 \subsection{Data}
-Our project idea is obtained from a Kaggle competition. Hence, data is taken from Kaggle. It consists of web search logs of Yandex, a Russian search engine, collected over a period of 30 days. The first 27 days form the train data and the remaining 3 days form the test data. \newline
-The training data is a stream of logs. Each log line includes a SESSION ID, a type of record  - which indicates if it is information about a query(Q), a click(C) or meta data(M). Based on the type of record, there are other fields like \textsl{UserID, QueryID and terms, URLID-DomainID and SERPID}. The field \textsl{TimePassed}, indicates the time that has passed since sessions start until the click was made which helps compute the dwell time. We use this data to generate feature files per user wherein each line contains the relevance score (0,1,2), query id and feature-value pairs for that query.
+Our project idea is obtained from a Kaggle competition which provides the data. It consists of web search logs of Yandex, a Russian search engine, collected over 30 days. The first 27 days form the train data and the remaining 3 days form the test data. \newline
+Each log line in train data includes a \textsl{SESSION ID}, a type of record- indicating information about query(\textsl{Q}), a click(\textsl{C}) or meta data(\textsl{M}). Based on the type of record, there are fields like \textsl{UserID, QueryID and terms, URLID-DomainID and SERPID}. The field \textsl{TimePassed}, indicates the time that has passed since sessions start until the click was made. We use this data to generate feature files per user wherein each line contains the relevance score (0,1,2), query id and feature-value pairs for that query.
 
 \subsection{Tools}
-We plan to use Python for generation of feature files. We also use RankLib library for the Learning to Rank algorithms and scikit-learn for any machine learning libraries we may need. We may also use a database to work with the large datasets and store our learned parameters - SQLite.
+We plan to use Python for generation of feature files. We also use RankLib library for the Learning to Rank algorithms and scikit-learn for any machine learning libraries we may need. We may use a database to work with the large datasets and store our learned parameters - SQLite.
 
 \section{Milestones}
 \subsection{Must achieve}
-We aim to achieve ordering of the URLs sorted according to decreasing relevance for a particular user. This would be reflected by an NDCG score close to 1. We will do a feature analysis to obtain the most relevant subset of features for the task.  There are a range of features we choose from which are mentioned in the next subsection. We are using  RankLib library for running Learning to Rank algorithms (also mentioned in detail in the next subsection) to obtain NDCG score on these different feature combinations. 
+We musts achieve a sorted URL list in order of decreasing relevance for a particular user. We will analyze features (see next subsection) to obtain the most optimum feature combination. We are using  RankLib library for running Learning to Rank algorithms (in detail in the next subsection) to obtain NDCG score on these different feature combinations. 
 \subsection{Expected to achieve}
-The Kaggle competition winners have experimented with various features - both user specific and global. Some of them are the non-personalized rank of the URL, the frequency of query, the position of the query within the user's session, whether the URL has been missed/skipped/clicked, the relevance of the snippet displayed in search results, the time a user spends on a particular URL and others. Many features are obtained as conditional probabilities given a predicate. This predicate is a function of variables on user, session, query and url returned.
+The Kaggle competition winners have experimented with various features - both user specific and global. Some of them are the non-personalized rank of the URL, the frequency of query, the position of the query within the user's session, whether the URL has been missed/skipped/clicked, the relevance of the snippet displayed in search results, the time a user spends on a particular URL and others. Many features are obtained as conditional probabilities given a predicate which is a function of variables on user, session, query and url returned.
 \newline
-Our aim is to experiment with different subsets of these features and compare their NDCG score to obtain the most relevant combination. We will use Random Forests (pointwise), RankNet (pairwise), AdaRank (pairwise) and LambdaMART algorithms from the RankLib library for our comparative analysis.
+Our aim is to experiment with different feature subsets and compare their NDCG score to obtain the most relevant combination. We will use Random Forests (pointwise), RankNet (pairwise), AdaRank (listwise) and LambdaMART (listwise) algorithms from the RankLib library for our comparative analysis.
 \subsection{Would like to achieve}
 One of the papers we read, speaks about whether personalization is necessary for every query. We would like to improve upon the search results by only personalizing when needed which depends on the type of query issued. This will add to the performance of the ranking system.
 \section{Final Writeup} The final writeup will disuss in detail the algorithms and feature analysis done based on the results obtained in each setting. Some broad headers will be:\\
