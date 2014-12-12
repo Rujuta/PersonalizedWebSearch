@@ -26,12 +26,19 @@ def get_user_objects(search_logs):
 #    global search_logs
  #   global user_objects
     user_objects=defaultdict(list)
+    temp = []
     for log in search_logs:
         items=log.split()
         if items[1] == 'M':
+            if(len(temp)!=0):
+                user_objects[user_id].append(temp)
             user_id=items[3]
+            temp = []
             continue;
-        user_objects[user_id].append(log)
+        temp.append(log)
+    if(len(temp)!=0):
+        user_objects[user_id].append(temp)
     return user_objects
+
 
 
