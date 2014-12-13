@@ -2,7 +2,6 @@
 from collections import defaultdict
 import fileread
 
-query_url_set = defaultdict(set)
 
 """Returns a dictionary of type {<Query_ID>, count} that indicates how many times 
 a particular query has been queried"""
@@ -24,7 +23,7 @@ def get_terms_in_query(query_terms,search_logs):
                 query_terms[items[4]]=count_query_terms
     return query_terms
 
-def get_urls_in_query(search_logs):
+def get_urls_in_query(search_logs, query_url_set):
     for log in search_logs:
             items=log.split()
             if items[2] == 'Q':

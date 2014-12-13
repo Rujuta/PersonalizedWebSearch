@@ -24,6 +24,7 @@ TEST='../data/test/'
 
 query_counts=defaultdict(int)
 query_terms=defaultdict(int)
+query_url_set = defaultdict(set)
 dir_entries=os.listdir(HISTORY)
 dir_entries=sorted(dir_entries)
 for dir_entry in dir_entries:
@@ -68,7 +69,7 @@ url_set = urls.get_urls(train_logs)
 
 print "Got url set"
 #get the set of all queries in train logs
-query_url_set = query.get_urls_in_query(train_logs)
+query_url_set = query.get_urls_in_query(train_logs, query_url_set)
 
 print "Got query set"
 #This is a key-value store where key  = tuple of <UserID, SessionID, QueryID, URL-Domain combo> The values will be the set of features 
