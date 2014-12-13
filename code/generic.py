@@ -47,6 +47,7 @@ def get_relevance_score(sessions_list, user_id, query_doc):
                 url_only_list=[]
                 for each in items[6:]:
                     url_only_list.append(each.split(",")[0])
+                flag=1
             if items[2] == 'C':
                 flag=1
                 try:
@@ -83,7 +84,7 @@ def get_relevance_score(sessions_list, user_id, query_doc):
             query_doc[temp_key]['score'] = 1;  #-2: missed
             i+=1
     #print "key error",ke, "value error", kv
-    return query_doc,ke
+    return query_doc
 
 def any_user_aggregate_000(query_doc_history, url_set):
 
@@ -357,14 +358,24 @@ def add_aggr_features(user_id,query_doc, dict_agg_000, dict_agg_001, dict_agg_01
             #We separated all components of a particular query-doc key. 
             #Now we will check values for each attribute we need to compute
             #Feature 000 for this query-doc
-            f_000= dict_agg_000[domain]
-            f_001= dict_agg_001[url]
-            f_010= dict_agg_010[(query,domain)]
-            f_011= dict_agg_011[(query,url)]
-            f_100= dict_agg_100[(user,domain)]
-            f_101= dict_agg_101[(user,url)]
-            f_110= dict_agg_110[(user,query,domain)]
-            f_111= dict_agg_111[(user,query,url)]
+            try:
+                f_000= dict_agg_000[domain]
+                f_001= dict_agg_001[url]
+                f_010= dict_agg_010[(query,domain)]
+                f_011= dict_agg_011[(query,url)]
+                f_100= dict_agg_100[(user,domain)]
+                f_101= dict_agg_101[(user,url)]
+                f_110= dict_agg_110[(user,query,domain)]
+                f_111= dict_agg_111[(user,query,url)]
+            except KeyError:
+                f_000= 0
+                f_001= 0
+                f_010= 0
+                f_011= 0
+                f_100= 0
+                f_101= 0
+                f_110= 0
+                f_111= 0
             aggr=[]
             aggr.append(f_000)
             aggr.append(f_001)
