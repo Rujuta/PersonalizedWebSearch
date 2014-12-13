@@ -1,5 +1,6 @@
 #! /usr/bin/env python
 from collections import OrderedDict
+from collections import defaultdict
 import fileread
 import query
 import generic
@@ -21,6 +22,8 @@ TRAIN='../data/train_tmp/'
 DEV='../data/dev/'
 TEST='../data/test/'
 
+query_counts=defaultdict(int)
+query_terms=defaultdict(int)
 dir_entries=os.listdir(HISTORY)
 dir_entries=sorted(dir_entries)
 for dir_entry in dir_entries:
@@ -53,11 +56,11 @@ user_objects_history=fileread.get_user_objects(history_logs)
 print "Got user objects history"
 
 #Get the number of times something was queried for from all history logs - or frequency of query
-query_counts = query.get_dict_query_counts(history_logs)
+query_counts = query.get_dict_query_counts(query_counts,history_logs)
 
 print "Got query counts"
 # Get number of terms in a query in each train log result
-query_terms = query.get_terms_in_query(train_logs)
+query_terms = query.get_terms_in_query(query_terms,train_logs)
 
 print "Got query terms"
 #get all urls returned in train data 
@@ -110,7 +113,7 @@ for user_id in user_objects_train.keys():
     #query_doc=OrderedDict()
     user_details = {'num_query':0,'num_avg_terms':0,'num_clicks12':0, 'num_clicks35':0,'num_clicks6':0}
     query_doc = generic.get_non_personalized_rank(user_objects_train[user_id], user_id, query_doc)
-    query_doc= query.fill_query_doc_features(query_doc)
+    query_doc= query.fill_query_doc_features(query_terms,query_counts,query_doc)
     query_doc = generic.get_relevance_score(user_objects_train[user_id], user_id, query_doc)
     dict_agg_100 = generic.aggregate_100(user_id, query_doc_history, query_doc)
     dict_agg_101 = generic.aggregate_101(user_id, query_doc_history, query_doc)
