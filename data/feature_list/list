@@ -1,0 +1,6 @@
+rank:	0
+pos:	0
+terms:	0
+frequency:	0
+score:	1
+aggr: 1,0,0,0,0,0,1,0 #001011001	 #(URL, Query, User- For each (miss, skip, click0,click1,click2)- For each ( MRR- Binary ) Snippet Quaility (Binary))
