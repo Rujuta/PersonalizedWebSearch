@@ -47,6 +47,7 @@ def get_relevance_score(sessions_list, user_id, query_doc):
                 url_only_list=[]
                 for each in items[6:]:
                     url_only_list.append(each.split(",")[0])
+                flag=1
             if items[2] == 'C':
                 flag=1
                 try:
@@ -83,7 +84,7 @@ def get_relevance_score(sessions_list, user_id, query_doc):
             query_doc[temp_key]['score'] = 1;  #-2: missed
             i+=1
     #print "key error",ke, "value error", kv
-    return query_doc,ke
+    return query_doc
 
 def any_user_aggregate_000(query_doc_history, url_set):
 
