@@ -24,7 +24,8 @@ def get_non_personalized_rank(sessions_list, user_id, query_doc):
 def get_relevance_score(sessions_list, user_id, query_doc):
     url_list=[]
     query_id=-1
-    ke=0;
+    ke=0
+    kv=0
     for session_info in sessions_list:               ##session of that user
         flag = 0
         counter=-1
@@ -55,13 +56,13 @@ def get_relevance_score(sessions_list, user_id, query_doc):
                     last_clicked = url_rank
                     if(last_clicked>max_last_clicked):
                         max_last_clicked=last_clicked
-                     while(i< url_rank ):
+                    while(i< url_rank ):
                         temp_key = (user_id, items[0],query_id,url_list[i])
                         query_doc[temp_key]['score'] = 2;  #-1: skipped
                         i+=1
-                     if counter+1 == len(session_info):
+                    if counter+1 == len(session_info):
                         query_doc[key]['score'] = 5
-                     else:
+                    else:
                         next_time = session_info[counter+1].split()[1] 
                         dwell_time = float(next_time) - float(items[1])
                         if(dwell_time<50):
@@ -69,9 +70,11 @@ def get_relevance_score(sessions_list, user_id, query_doc):
                         elif(dwell_time>=50 and dwell_time<300):
                             query_doc[key]['score'] = 4
                         else:
-                        query_doc[key]['score'] = 5
+                            query_doc[key]['score'] = 5
                 except KeyError:
                     ke+=1
+                except ValueError:
+                    kv+=1
                 ##---->can optimize more- need to do only once
         #assign rest as Missed
         i=max_last_clicked+1
@@ -79,8 +82,8 @@ def get_relevance_score(sessions_list, user_id, query_doc):
             temp_key = (user_id,items[0],query_id,url_list[i])
             query_doc[temp_key]['score'] = 1;  #-2: missed
             i+=1
-        print "key error",ke
-    return query_doc
+    #print "key error",ke, "value error", kv
+    return query_doc,ke
 
 ###aggregate for 000
 def any_user_aggregate_000(query_doc_history, url_set):

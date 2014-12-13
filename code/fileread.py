@@ -16,7 +16,8 @@ All feature functions will have to call the functions in this file
 def read_file(file_name,search_logs):
     #global search_logs
     with open(file_name) as f:
-       search_logs = f.readlines()
+        for each in f.readlines():
+            search_logs.append(each)
     return search_logs
 
 
