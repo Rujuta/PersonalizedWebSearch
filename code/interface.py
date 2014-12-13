@@ -8,10 +8,10 @@ import writefile
 """This is the file that will be run always"""
 
 #Get history logs
-history_logs=fileread.read_file('../data/history/try')
+history_logs=fileread.read_file('../data/history/traa')
 
 #Get train logs
-train_logs=fileread.read_file('../data/train/try')
+train_logs=fileread.read_file('../data/train/traj')
 
 #Get session wise user objects
 user_objects_history=fileread.get_user_objects(train_logs)
