@@ -82,8 +82,7 @@ query_doc = OrderedDict()
 value_error=0
 for user_id, sessions in user_objects_history.items():
     query_doc_history = generic.get_non_personalized_rank(user_objects_history[user_id], user_id, query_doc_history)
-    query_doc_history,ve = generic.get_relevance_score(user_objects_history[user_id], user_id, query_doc_history)
-    value_error+=ve
+    query_doc_history = generic.get_relevance_score(user_objects_history[user_id], user_id, query_doc_history)
 
 
 print "Processed query doc history for all users" 
@@ -91,6 +90,7 @@ print "Processed query doc history for all users"
 print "history :::",value_error
 ##gets any user aggregate feature data from history
 #Any user Any query same domain
+
 dict_agg_000 = generic.any_user_aggregate_000(query_doc_history, url_set)
 print "got agg 000"
 #Any user, Any query, same URL
