@@ -10,10 +10,12 @@ import urls
 """This is the file that will be run always"""
 
 #Get history logs
-history_logs=fileread.read_file('../data/history/try')
+history_logs=[]
+history_logs=fileread.read_file('../data/history/try', history_logs)
 
 #Get train logs
-train_logs=fileread.read_file('../data/train/tr1')
+train_logs=[]
+train_logs=fileread.read_file('../data/train/tr1', train_logs)
 
 #Get session wise user objects
 user_objects_train=fileread.get_user_objects(train_logs)
