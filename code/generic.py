@@ -12,7 +12,7 @@ def get_non_personalized_rank(sessions_list):
             if items[2] == 'Q':
                 rank=1
                 for doc in items[6:]:
-                    key=(items[0], items[4],doc)          ##items[4]: queryID
+                    key=(items[0],items[4],doc)          ##items[4]: queryID
                     if key not in query_doc.keys():
                         query_doc[key]=OrderedDict()
                     query_doc[key]['rank']=rank         ##nonPersonalizedRank
@@ -35,8 +35,8 @@ def get_relevance_score(sessions_list, query_doc):
                 if(flag!=0):
                     i=max_last_clicked+1
                     while(i<len(url_list)):
-                        temp_key = (items[0], query_id,  url_list[i])
-                        query_doc[temp_key]['score'] = -2;  #-2: missed
+                        temp_key = (items[0],query_id,url_list[i])
+                        query_doc[temp_key]['score'] = 1;  #-2: missed
                         i+=1
                 query_id = items[4]
                 #init_time =  float(items[1])
@@ -57,25 +57,25 @@ def get_relevance_score(sessions_list, query_doc):
                 if(last_clicked>max_last_clicked):
                     max_last_clicked=last_clicked
                 while(i< url_rank ):
-                    temp_key = (items[0], query_id,  url_list[i])
-                    query_doc[temp_key]['score'] = -1;  #-1: skipped
+                    temp_key = (items[0],query_id,url_list[i])
+                    query_doc[temp_key]['score'] = 2;  #-1: skipped
                     i+=1
                 if counter+1 == len(session_info):
-                    query_doc[key]['score'] = 2
+                    query_doc[key]['score'] = 5
                 else:
                     next_time = session_info[counter+1].split()[1] 
                     dwell_time = float(next_time) - float(items[1])
                     if(dwell_time<50):
-                        query_doc[key]['score'] = 0;
+                        query_doc[key]['score'] = 3;
                     elif(dwell_time>=50 and dwell_time<300):
-                        query_doc[key]['score'] = 1;
+                        query_doc[key]['score'] = 4
                     else:
-                      query_doc[key]['score'] = 2;
+                      query_doc[key]['score'] = 5
                 ##---->can optimize more- need to do only once
         #assign rest as Missed
         i=max_last_clicked+1
         while(i<len(url_list)):
-            temp_key = (items[0], query_id,  url_list[i])
-            query_doc[temp_key]['score'] = -2;  #-2: missed
+            temp_key = (items[0],query_id,url_list[i])
+            query_doc[temp_key]['score'] = 1;  #-2: missed
             i+=1
     return query_doc
