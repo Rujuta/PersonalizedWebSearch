@@ -358,14 +358,24 @@ def add_aggr_features(user_id,query_doc, dict_agg_000, dict_agg_001, dict_agg_01
             #We separated all components of a particular query-doc key. 
             #Now we will check values for each attribute we need to compute
             #Feature 000 for this query-doc
-            f_000= dict_agg_000[domain]
-            f_001= dict_agg_001[url]
-            f_010= dict_agg_010[(query,domain)]
-            f_011= dict_agg_011[(query,url)]
-            f_100= dict_agg_100[(user,domain)]
-            f_101= dict_agg_101[(user,url)]
-            f_110= dict_agg_110[(user,query,domain)]
-            f_111= dict_agg_111[(user,query,url)]
+            try:
+                f_000= dict_agg_000[domain]
+                f_001= dict_agg_001[url]
+                f_010= dict_agg_010[(query,domain)]
+                f_011= dict_agg_011[(query,url)]
+                f_100= dict_agg_100[(user,domain)]
+                f_101= dict_agg_101[(user,url)]
+                f_110= dict_agg_110[(user,query,domain)]
+                f_111= dict_agg_111[(user,query,url)]
+            except KeyError:
+                f_000= 0
+                f_001= 0
+                f_010= 0
+                f_011= 0
+                f_100= 0
+                f_101= 0
+                f_110= 0
+                f_111= 0
             aggr=[]
             aggr.append(f_000)
             aggr.append(f_001)
