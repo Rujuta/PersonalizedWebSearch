@@ -74,6 +74,17 @@ def get_features_needed(file_name):
                     features_on[key]=indices
         return features_on
 
-user_features=get_features('../data/user_features/0')
+USER_FILES="../data/user_features/"
+RANKLIB_INPUT='../data/ranklib/'
+
 feature_set=get_features_needed('../data/feature_list/list')
-create_file(user_features,feature_set,'tmp')
+dir_entries_users=os.listdir(USER_FILES)
+dir_entries=sorted(dir_entries)
+for dir_entry in dir_entries:
+    dir_entry_path=os.path.join(USER_FILES,dir_entry)
+    dir_entry_path_input=os.path.join(RANKLIB_INPUT,dir_entry)
+    if os.path.isfile(dir_entry_path):
+        user_vector=get_features(dir_entry_path)
+        create_file(user_vector,feature_set,dir_entry_path_input)
+    
+

@@ -35,10 +35,10 @@ def get_urls_in_query(search_logs):
 def fill_query_doc_features(query_terms, query_counts, query_doc):
     # Fill in the number of times an item has been queried for by anyone and the no of terms in that query
         for k,v in query_doc.items():
-            count_terms= query_terms[k[0]]
+            count_terms= query_terms[k[2]]
             query_doc[k]['terms']=count_terms
             try:
-                count_queried_for=query_counts[k[0]]
+                count_queried_for=query_counts[k[2]]
                 query_doc[k]['frequency']=count_queried_for
             except KeyError:
                 query_doc[k]['frequency']=0
