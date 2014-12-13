@@ -4,7 +4,6 @@ from collections import OrderedDict
 
 """Returns the non-personalized rank for some query-doc combination for a particular user"""
 def get_non_personalized_rank(sessions_list, user_id, query_doc):
-    #a dictionary keyed by query-doc combination
     for session_info in sessions_list:                  ##session of that user
         pos=1
         for line in session_info:
@@ -21,9 +20,11 @@ def get_non_personalized_rank(sessions_list, user_id, query_doc):
                 pos+=1
     return query_doc
 
+"""This function gets the relevance score. Score of 1: Missed 2: Skipped 3: click0 4: Click1 5: click2"""
 def get_relevance_score(sessions_list, user_id, query_doc):
     url_list=[]
     query_id=-1
+    ke=0;
     for session_info in sessions_list:               ##session of that user
         flag = 0
         counter=-1
@@ -47,27 +48,30 @@ def get_relevance_score(sessions_list, user_id, query_doc):
                     url_only_list.append(each.split(",")[0])
             if items[2] == 'C':
                 flag=1
-                url_rank = url_only_list.index(items[4])
-                key=(user_id,items[0], query_id, url_list[url_rank])
-                i= last_clicked + 1
-                last_clicked = url_rank
-                if(last_clicked>max_last_clicked):
-                    max_last_clicked=last_clicked
-                while(i< url_rank ):
-                    temp_key = (user_id, items[0],query_id,url_list[i])
-                    query_doc[temp_key]['score'] = 2;  #-1: skipped
-                    i+=1
-                if counter+1 == len(session_info):
-                    query_doc[key]['score'] = 5
-                else:
-                    next_time = session_info[counter+1].split()[1] 
-                    dwell_time = float(next_time) - float(items[1])
-                    if(dwell_time<50):
-                        query_doc[key]['score'] = 3;
-                    elif(dwell_time>=50 and dwell_time<300):
-                        query_doc[key]['score'] = 4
-                    else:
-                      query_doc[key]['score'] = 5
+                try:
+                    url_rank = url_only_list.index(items[4])
+                    key=(user_id,items[0], query_id, url_list[url_rank])
+                    i= last_clicked + 1
+                    last_clicked = url_rank
+                    if(last_clicked>max_last_clicked):
+                        max_last_clicked=last_clicked
+                     while(i< url_rank ):
+                        temp_key = (user_id, items[0],query_id,url_list[i])
+                        query_doc[temp_key]['score'] = 2;  #-1: skipped
+                        i+=1
+                     if counter+1 == len(session_info):
+                        query_doc[key]['score'] = 5
+                     else:
+                        next_time = session_info[counter+1].split()[1] 
+                        dwell_time = float(next_time) - float(items[1])
+                        if(dwell_time<50):
+                            query_doc[key]['score'] = 3;
+                        elif(dwell_time>=50 and dwell_time<300):
+                            query_doc[key]['score'] = 4
+                        else:
+                        query_doc[key]['score'] = 5
+                except KeyError:
+                    ke+=1
                 ##---->can optimize more- need to do only once
         #assign rest as Missed
         i=max_last_clicked+1
@@ -75,6 +79,7 @@ def get_relevance_score(sessions_list, user_id, query_doc):
             temp_key = (user_id,items[0],query_id,url_list[i])
             query_doc[temp_key]['score'] = 1;  #-2: missed
             i+=1
+        print "key error",ke
     return query_doc
 
 ###aggregate for 000
@@ -228,6 +233,7 @@ def any_user_aggregate_011(query_doc_history, query_url_set):
                 dict_agg_011[(q, url)] = [count_1/f_count_p, count_2/f_count_p, count_3/f_count_p, count_4/f_count_p,count_5/f_count_p]
     return dict_agg_011
 
+"""Same user, any query, same domain"""
 def aggregate_100(user_id, query_doc_history, query_doc):
     dict_agg_100 = defaultdict(float)
     domain_set = set()
@@ -262,6 +268,7 @@ def aggregate_100(user_id, query_doc_history, query_doc):
             dict_agg_100[(user_id, domain)] = [count_1/f_count_p, count_2/f_count_p, count_3/f_count_p, count_4/f_count_p,count_5/f_count_p]
     return dict_agg_100
 
+"""Same user, any query, same URL"""
 def aggregate_101(user_id, query_doc_history, query_doc):
     dict_agg_101 = defaultdict(float)
     for k in query_doc.keys():
@@ -294,6 +301,7 @@ def aggregate_101(user_id, query_doc_history, query_doc):
             dict_agg_101[(user_id, url)] = [count_1/f_count_p, count_2/f_count_p, count_3/f_count_p, count_4/f_count_p,count_5/f_count_p]
     return dict_agg_101
 
+"""Same user, same query, any domain"""
 def aggregate_110(user_id, query_doc_history, query_doc, query_url_set):
     dict_agg_110 = defaultdict(float)
     query_set = set()
@@ -332,7 +340,7 @@ def aggregate_110(user_id, query_doc_history, query_doc, query_url_set):
                 dict_agg_110[(user_id, q, domain)] = [count_1/f_count_p, count_2/f_count_p, count_3/f_count_p, count_4/f_count_p,count_5/f_count_p]
     return dict_agg_110
 
-
+"""Same user same query same url"""
 def aggregate_111(user_id, query_doc_history, query_doc, query_url_set):
     dict_agg_111 = defaultdict(float)
     query_set = set()
@@ -363,9 +371,40 @@ def aggregate_111(user_id, query_doc_history, query_doc, query_url_set):
                         elif query_doc_history[k]['score']==5:
                             count_5+=1
             f_count_p= float(count_p)
-            print count_p
             if count_p==0:
                 dict_agg_111[(user_id, q,url)] = [0,0,0,0,0]
             else:
                 dict_agg_111[(user_id, q, url)] = [count_1/f_count_p, count_2/f_count_p, count_3/f_count_p, count_4/f_count_p,count_5/f_count_p]
     return dict_agg_111
+
+"""Add the aggregate features to feature vector"""
+def add_aggr_features(user_id,query_doc, dict_agg_000, dict_agg_001, dict_agg_010,dict_agg_011, dict_agg_100, dict_agg_101, dict_agg_110,dict_agg_111):
+    #iterate through each query-doc combo 
+        for key,value in query_doc.items():
+            user=key[0]
+            session=key[1]
+            query=key[2]
+            url=key[3].split(",")[0]
+            domain=key[3].split(",")[1]
+            #We separated all components of a particular query-doc key. 
+            #Now we will check values for each attribute we need to compute
+            #Feature 000 for this query-doc
+            f_000= dict_agg_000[domain]
+            f_001= dict_agg_001[url]
+            f_010= dict_agg_010[(query,domain)]
+            f_011= dict_agg_011[(query,url)]
+            f_100= dict_agg_100[(user,domain)]
+            f_101= dict_agg_101[(user,url)]
+            f_110= dict_agg_110[(user,query,domain)]
+            f_111= dict_agg_111[(user,query,url)]
+            aggr=[]
+            aggr.append(f_000)
+            aggr.append(f_001)
+            aggr.append(f_010)
+            aggr.append(f_011)
+            aggr.append(f_100)
+            aggr.append(f_101)
+            aggr.append(f_110)
+            aggr.append(f_111)
+            query_doc[key]['aggr']=aggr
+        return query_doc
