@@ -13,7 +13,8 @@ All feature functions will have to call the functions in this file
     training program
 """
 #user_objects=defaultdict(list)
-def read_file(file_name, search_logs):
+
+def read_file(file_name,search_logs):
     #global search_logs
     with open(file_name) as f:
        for each in f.readlines():
