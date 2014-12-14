@@ -2,7 +2,7 @@
 from collections import defaultdict
 from collections import OrderedDict
 
-def add_user_features(user_details, sessions_list):
+def add_user_features(user_details, sessions_list, user_id):
     num_terms = 0
     num_query = 0
     url_list = []
@@ -10,13 +10,18 @@ def add_user_features(user_details, sessions_list):
         for line in session_info:
             items = line.split()
             if items[2] == 'Q':
+                if user_id == '1582533':
+                    print "THIS USER IN HISTORY" ,items
                 num_query +=1
                 num_terms += len(items[5].split(','))
                 url_list = []
                 for each in items[6:]:
                     url_list.append(each.split(',')[0])
             if items[2] == 'C':
-                url_rank = url_list.index(items[4])
+                try:
+                    url_rank = url_list.index(items[4])
+                except ValueError:
+                    continue
                 if url_rank==0 or url_rank==1:
                     user_details['num_clicks12'] +=1
                 elif url_rank>=2 and url_rank<=4:
