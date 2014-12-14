@@ -20,8 +20,8 @@ def f():
 
     HISTORY='../data/history_tmp/'
     TRAIN='../data/train_tmp/'
-    DEV='../data/dev/'
-    TEST='../data/test/'
+    DEV='../data/dev_tmp/'
+    TEST='../data/test_tmp/'
 
     query_counts=defaultdict(int)
     query_terms=defaultdict(int)
@@ -89,7 +89,7 @@ def f():
         query_doc_history = generic.get_non_personalized_rank(user_objects_history[user_id], user_id, query_doc_history)
         query_doc_history = generic.get_relevance_score(user_objects_history[user_id], user_id, query_doc_history)
 
-    writefile.create_input_file_history(query_doc_history) #,user_details
+    #writefile.create_input_file_history(query_doc_history) #,user_details
 
     print "Processed query doc history for all users"
 
@@ -123,7 +123,7 @@ def f():
         dict_agg_110 = generic.aggregate_110(user_id, query_doc_history, query_doc, query_url_set)
         dict_agg_111 = generic.aggregate_111(user_id, query_doc_history, query_doc, query_url_set)
         if user_id in user_objects_history.keys():
-            user_details = user.add_user_features(user_details, user_objects_history[user_id])
+            user_details = user.add_user_features(user_details, user_objects_history[user_id], user_id)
         query_doc=generic.add_aggr_features(user_id,query_doc, dict_agg_000, dict_agg_001, dict_agg_010,dict_agg_011, dict_agg_100, dict_agg_101, dict_agg_110,dict_agg_111)
         writefile.create_input_file(user_id,query_doc,user_details)
         print "wrote file"
