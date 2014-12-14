@@ -3,6 +3,7 @@
 from collections import defaultdict
 from collections import OrderedDict
 import json
+import os
 
 """The file name will be a user specific file name from which we get the features
 that need to specified for a particular user"""
@@ -79,7 +80,7 @@ RANKLIB_INPUT='../data/ranklib/'
 
 feature_set=get_features_needed('../data/feature_list/list')
 dir_entries_users=os.listdir(USER_FILES)
-dir_entries=sorted(dir_entries)
+dir_entries=sorted(dir_entries_users)
 for dir_entry in dir_entries:
     dir_entry_path=os.path.join(USER_FILES,dir_entry)
     dir_entry_path_input=os.path.join(RANKLIB_INPUT,dir_entry)
