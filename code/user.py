@@ -10,8 +10,6 @@ def add_user_features(user_details, sessions_list, user_id):
         for line in session_info:
             items = line.split()
             if items[2] == 'Q':
-                if user_id == '1582533':
-                    print "THIS USER IN HISTORY" ,items
                 num_query +=1
                 num_terms += len(items[5].split(','))
                 url_list = []
