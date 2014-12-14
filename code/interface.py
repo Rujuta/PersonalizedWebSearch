@@ -88,6 +88,7 @@ for user_id, sessions in user_objects_history.items():
     query_doc_history = generic.get_non_personalized_rank(user_objects_history[user_id], user_id, query_doc_history)
     query_doc_history = generic.get_relevance_score(user_objects_history[user_id], user_id, query_doc_history)
 
+writefile.create_input_file_history(query_doc_history) #,user_details
 
 print "Processed query doc history for all users" 
 
