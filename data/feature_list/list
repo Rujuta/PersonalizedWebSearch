@@ -1,6 +1,12 @@
+num_query: 1
+num_avg_terms: 1
+num_clicks12: 1
+num_clicks35: 1
+num_clicks6: 1
 rank:	1
 pos:	1
 terms:	1
 frequency:	1
-score:	1
-aggr: 1,0,0,0,0,0,1,0 #001011001	 #(URL, Query, User- For each (miss, skip, click0,click1,click2)- For each ( MRR- Binary ) Snippet Quaility (Binary))
+score:	1    #always 1
+aggr: 1,0,0,0,0,0,0,1    #001011001	 #(URL, Query, User- For each (miss, skip, click0,click1,click2)- For each ( MRR-Miss, MRR-Skip, MRR-Click ))
+l: 0,0,0,0,0,1,1,1
