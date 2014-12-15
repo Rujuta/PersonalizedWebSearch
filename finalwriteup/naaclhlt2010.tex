@@ -21,10 +21,10 @@
 \usepackage{hyperref}
 \setlength\titlebox{6.5cm}    % Expanding the titlebox
 
-\title{Personalized Web Search using different ranking algorithms}
+\title{Personalized Web Search\\ Feature Analysis and Comparison of Ranking Algorithms}
 
 \author{Biman Gujral\\
-  {\tt biman@jhu.edu}
+  {\tt bgujral1@jhu.edu}
   \And
   Rujuta Deshpande \\
   {\tt rdeshpa3@jhu.edu}}
@@ -34,11 +34,11 @@
 \begin{document}
 \maketitle
 \begin{abstract}
- We personalize web search rankings for a user by analyzing user search history from Yandex' search engine logs. We have in total 50 features, which we turn on and off for different runs and analyze the contribution of each feature to the resultant NDCG score. We compare the performance in terms of ranking accuracy using various Learning To Rank Algorithms - Random Forests, LambdaMART, Ranknet and AdaRank for a given set of features. 
+ We personalize web search rankings for a user by analyzing user search history from Yandex's search engine logs. We have in total 50 features, which we turn on and off for different runs and analyze the contribution of each feature to the resultant NDCG score. We compare the performance in terms of ranking accuracy using various Learning To Rank Algorithms - Random Forests, LambdaMART, Ranknet and AdaRank for a given set of features. 
 \end{abstract}
 
 \section{Introduction}
-Learning to Rank is a technique that constructs ranking models for Information Retrieval Systems. The training data consists of a set of query-document pairs. Each query-document pair forms one data point and is associated with a feature vector. This pair is given a relevance score and in the training data, the ranking is associated with an ordering over these relevance scores. The task of a learning to rank model, is to assign a relevance score to each query-document pair in the test data and thereby, create a permutation over the different documents returned for a particular query which is similar to the ordering found in the train data. Personalized rankings, re-rank the returned results in an order that would be preferable to a given user. The preference is learnt from a user's past search history. It can also be learnt from his searches and clicks in the same sessions or in anterior sessions.
+Learning to Rank is a technique that constructs ranking models for Information Retrieval Systems. The training data consists of a set of query-document pairs. Each query-document pair forms one data point and is associated with a feature vector. Every pair is assigned a relevance score. Documents associated with a query are ordered according to decreasing relevance scores. The task of a learning to rank model, is to assign a relevance score to each query-document pair in the test data and thereby, create a permutation over the different documents returned for a particular query which is similar to the ordering found in the train data. Personalized rankings, re-rank the returned results in an order that would be preferable to a given user. The preference is learnt from a user's past search history. It can also be learnt from his searches and clicks in the same sessions or in anterior sessions.
 \section{Related Work}
 
 \subsection{Algorithms}
