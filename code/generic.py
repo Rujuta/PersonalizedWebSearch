@@ -95,31 +95,41 @@ def any_user_aggregate_000(query_doc_history, url_set):
                 for line in session_info:'''
     #sorting domains
     dict_agg_000 = {}
+    dict_counts = defaultdict(float)
     for url_domain in url_set:
-        dict_agg_000[url_domain.split(',')[1]] = [0.0,0.0,0.0,0.0,0.0,0.0]
+        dict_agg_000[url_domain.split(',')[1]] = [1.0,0.0,0.0,0.0,0.0,0.283,0.283,0.283]
+        #[count_miss,count_skip,click0,click1,click2,total_occ,MRR_miss,MRR_skip,MRR_click]
     domain_set = dict_agg_000.keys()
     #finding count(l,P) for a P:000
     for k in query_doc_history.keys():
         d=k[3].split(",")[1]
         if d in domain_set:
-            dict_agg_000[d][5]+=1
+            dict_counts[d] +=1
             if query_doc_history[k]['score']==1:
                 dict_agg_000[d][0]+=1
+                dict_agg_000[d][5]+=1.0/query_doc_history[k]['rank']
             elif query_doc_history[k]['score']==2:
                 dict_agg_000[d][1]+=1
+                dict_agg_000[d][6]+=1.0/query_doc_history[k]['rank']
             elif query_doc_history[k]['score']==3:
                 dict_agg_000[d][2]+=1
+                dict_agg_000[d][7]+=1.0/query_doc_history[k]['rank']
             elif query_doc_history[k]['score']==4:
                 dict_agg_000[d][3]+=1
+                dict_agg_000[d][7]+=1.0/query_doc_history[k]['rank']
             elif query_doc_history[k]['score']==5:
                 dict_agg_000[d][4]+=1
+                dict_agg_000[d][7]+=1.0/query_doc_history[k]['rank']
     for domain in domain_set:
         if dict_agg_000[domain][5]>0.0:
-            dict_agg_000[domain][0] = dict_agg_000[domain][0]/dict_agg_000[domain][5]
-            dict_agg_000[domain][1] = dict_agg_000[domain][1]/dict_agg_000[domain][5]
-            dict_agg_000[domain][2] = dict_agg_000[domain][2]/dict_agg_000[domain][5]
-            dict_agg_000[domain][3] = dict_agg_000[domain][3]/dict_agg_000[domain][5]
-            dict_agg_000[domain][4] = dict_agg_000[domain][4]/dict_agg_000[domain][5]
+            dict_agg_000[domain][0] = dict_agg_000[domain][0]/(dict_counts[domain]+1)
+            dict_agg_000[domain][1] = dict_agg_000[domain][1]/(dict_counts[domain]+1)
+            dict_agg_000[domain][2] = dict_agg_000[domain][2]/(dict_counts[domain]+1)
+            dict_agg_000[domain][3] = dict_agg_000[domain][3]/(dict_counts[domain]+1)
+            dict_agg_000[domain][4] = dict_agg_000[domain][4]/(dict_counts[domain]+1)
+            dict_agg_000[domain][5] = dict_agg_000[domain][5]/(dict_counts[domain]+1)
+            dict_agg_000[domain][6] = dict_agg_000[domain][6]/(dict_counts[domain]+1)
+            dict_agg_000[domain][7] = dict_agg_000[domain][7]/(dict_counts[domain]+1)
     return dict_agg_000
 
 #aggregate for 001
@@ -127,30 +137,39 @@ def any_user_aggregate_001(query_doc_history, url_set):
 
     #finding count(l,P) for a P:001
     dict_agg_001 = {}
+    dict_counts= defaultdict(float)
     for url_domain in url_set:
-        dict_agg_001[url_domain.split(',')[0]] = [0.0,0.0,0.0,0.0,0.0,0.0]
+        dict_agg_001[url_domain.split(',')[0]] = [1.0,0.0,0.0,0.0,0.0,0.283,0.283,0.283]
     urls = dict_agg_001.keys()
     for k in query_doc_history.keys():
         u=k[3].split(",")[0]
         if u in urls:
-            dict_agg_001[u][5]+=1
+            dict_counts[u]+=1
             if query_doc_history[k]['score']==1:
                 dict_agg_001[u][0]+=1
+                dict_agg_001[u][5]+=1.0/query_doc_history[k]['rank']
             elif query_doc_history[k]['score']==2:
                 dict_agg_001[u][1]+=1
+                dict_agg_001[u][6]+=1.0/query_doc_history[k]['rank']
             elif query_doc_history[k]['score']==3:
                 dict_agg_001[u][2]+=1
+                dict_agg_001[u][7]+=1.0/query_doc_history[k]['rank']
             elif query_doc_history[k]['score']==4:
                 dict_agg_001[u][3]+=1
+                dict_agg_001[u][7]+=1.0/query_doc_history[k]['rank']
             elif query_doc_history[k]['score']==5:
                 dict_agg_001[u][4]+=1
+                dict_agg_001[u][7]+=1.0/query_doc_history[k]['rank']
     for url in urls:
         if dict_agg_001[url][5]>0.0:
-            dict_agg_001[url][0] = dict_agg_001[url][0]/dict_agg_001[url][5]
-            dict_agg_001[url][1] = dict_agg_001[url][1]/dict_agg_001[url][5]
-            dict_agg_001[url][2] = dict_agg_001[url][2]/dict_agg_001[url][5]
-            dict_agg_001[url][3] = dict_agg_001[url][3]/dict_agg_001[url][5]
-            dict_agg_001[url][4] = dict_agg_001[url][4]/dict_agg_001[url][5]
+            dict_agg_001[url][0] = dict_agg_001[url][0]/(dict_counts[url]+1)
+            dict_agg_001[url][1] = dict_agg_001[url][1]/(dict_counts[url]+1)
+            dict_agg_001[url][2] = dict_agg_001[url][2]/(dict_counts[url]+1)
+            dict_agg_001[url][3] = dict_agg_001[url][3]/(dict_counts[url]+1)
+            dict_agg_001[url][4] = dict_agg_001[url][4]/(dict_counts[url]+1)
+            dict_agg_001[url][5] = dict_agg_001[url][5]/(dict_counts[url]+1)
+            dict_agg_001[url][6] = dict_agg_001[url][6]/(dict_counts[url]+1)
+            dict_agg_001[url][7] = dict_agg_001[url][7]/(dict_counts[url]+1)
     return dict_agg_001
 
 def any_user_aggregate_010(query_doc_history, query_url_set):
@@ -158,32 +177,41 @@ def any_user_aggregate_010(query_doc_history, query_url_set):
     #domain matches and query matches
 
     dict_agg_010 = {}
+    dict_counts= defaultdict(float)
     for q in query_url_set.keys():
         for url_domain in query_url_set[q]:
-            dict_agg_010[(q,url_domain.split(',')[1])] = [0.0,0.0,0.0,0.0,0.0,0.0]
+            dict_agg_010[(q,url_domain.split(',')[1])] = [1.0,0.0,0.0,0.0,0.0,0.283,0.283,0.283]
     qds = dict_agg_010.keys()
     for k in query_doc_history.keys():
         d=k[3].split(",")[1]
         q=k[2]
         if (q,d) in qds:
-            dict_agg_010[(q,d)][5]+=1
+            dict_counts[(q,d)]+=1
             if query_doc_history[k]['score']==1:
                 dict_agg_010[(q,d)][0]+=1
+                dict_agg_010[(q,d)][5]+=1.0/query_doc_history[k]['rank']
             elif query_doc_history[k]['score']==2:
                 dict_agg_010[(q,d)][1]+=1
+                dict_agg_010[(q,d)][6]+=1.0/query_doc_history[k]['rank']
             elif query_doc_history[k]['score']==3:
                 dict_agg_010[(q,d)][2]+=1
+                dict_agg_010[(q,d)][7]+=1.0/query_doc_history[k]['rank']
             elif query_doc_history[k]['score']==4:
                 dict_agg_010[(q,d)][3]+=1
+                dict_agg_010[(q,d)][7]+=1.0/query_doc_history[k]['rank']
             elif query_doc_history[k]['score']==5:
                 dict_agg_010[(q,d)][4]+=1
+                dict_agg_010[(q,d)][7]+=1.0/query_doc_history[k]['rank']
     for k in qds:
         if dict_agg_010[k][5]>0.0:
-            dict_agg_010[k][0] = dict_agg_010[k][0]/dict_agg_010[k][5]
-            dict_agg_010[k][1] = dict_agg_010[k][1]/dict_agg_010[k][5]
-            dict_agg_010[k][2] = dict_agg_010[k][2]/dict_agg_010[k][5]
-            dict_agg_010[k][3] = dict_agg_010[k][3]/dict_agg_010[k][5]
-            dict_agg_010[k][4] = dict_agg_010[k][4]/dict_agg_010[k][5]
+            dict_agg_010[k][0] = dict_agg_010[k][0]/(dict_counts[k]+1)
+            dict_agg_010[k][1] = dict_agg_010[k][1]/(dict_counts[k]+1)
+            dict_agg_010[k][2] = dict_agg_010[k][2]/(dict_counts[k]+1)
+            dict_agg_010[k][3] = dict_agg_010[k][3]/(dict_counts[k]+1)
+            dict_agg_010[k][4] = dict_agg_010[k][4]/(dict_counts[k]+1)
+            dict_agg_010[k][5] = dict_agg_010[k][5]/(dict_counts[k]+1)
+            dict_agg_010[k][6] = dict_agg_010[k][6]/(dict_counts[k]+1)
+            dict_agg_010[k][7] = dict_agg_010[k][7]/(dict_counts[k]+1)
     return dict_agg_010
 
 
@@ -192,158 +220,203 @@ def any_user_aggregate_011(query_doc_history, query_url_set):
     #domain matches and query matches
 
     dict_agg_011 = {}
+    dict_counts= defaultdict(float)
     for q in query_url_set.keys():
         for url_domain in query_url_set[q]:
-            dict_agg_011[(q,url_domain.split(',')[0])] = [0.0,0.0,0.0,0.0,0.0,0.0]
+            dict_agg_011[(q,url_domain.split(',')[0])] = [1.0,0.0,0.0,0.0,0.0,0.283,0.283,0.283]
     qus = dict_agg_011.keys()
     for k in query_doc_history.keys():
         u=k[3].split(",")[0]
         q=k[2]
         if (q,u) in qus:
-            dict_agg_011[(q,u)][5]+=1
+            dict_counts[(q,u)]+=1
             if query_doc_history[k]['score']==1:
                 dict_agg_011[(q,u)][0]+=1
+                dict_agg_011[(q,u)][5]+=1.0/query_doc_history[k]['rank']
             elif query_doc_history[k]['score']==2:
                 dict_agg_011[(q,u)][1]+=1
+                dict_agg_011[(q,u)][6]+=1.0/query_doc_history[k]['rank']
             elif query_doc_history[k]['score']==3:
                 dict_agg_011[(q,u)][2]+=1
+                dict_agg_011[(q,u)][7]+=1.0/query_doc_history[k]['rank']
             elif query_doc_history[k]['score']==4:
                 dict_agg_011[(q,u)][3]+=1
+                dict_agg_011[(q,u)][7]+=1.0/query_doc_history[k]['rank']
             elif query_doc_history[k]['score']==5:
                 dict_agg_011[(q,u)][4]+=1
+                dict_agg_011[(q,u)][7]+=1.0/query_doc_history[k]['rank']
     for k in qus:
         if dict_agg_011[k][5]>0.0:
-            dict_agg_011[k][0] = dict_agg_011[k][0]/dict_agg_011[k][5]
-            dict_agg_011[k][1] = dict_agg_011[k][1]/dict_agg_011[k][5]
-            dict_agg_011[k][2] = dict_agg_011[k][2]/dict_agg_011[k][5]
-            dict_agg_011[k][3] = dict_agg_011[k][3]/dict_agg_011[k][5]
-            dict_agg_011[k][4] = dict_agg_011[k][4]/dict_agg_011[k][5]
+            dict_agg_011[k][0] = dict_agg_011[k][0]/(dict_counts[k]+1)
+            dict_agg_011[k][1] = dict_agg_011[k][1]/(dict_counts[k]+1)
+            dict_agg_011[k][2] = dict_agg_011[k][2]/(dict_counts[k]+1)
+            dict_agg_011[k][3] = dict_agg_011[k][3]/(dict_counts[k]+1)
+            dict_agg_011[k][4] = dict_agg_011[k][4]/(dict_counts[k]+1)
+            dict_agg_011[k][5] = dict_agg_011[k][5]/(dict_counts[k]+1)
+            dict_agg_011[k][6] = dict_agg_011[k][6]/(dict_counts[k]+1)
+            dict_agg_011[k][7] = dict_agg_011[k][7]/(dict_counts[k]+1)
     return dict_agg_011
 
 """Same user, any query, same domain"""
 def aggregate_100(user_id, query_doc_history, query_doc):
     dict_agg_100 = {}
+    dict_counts= defaultdict(float)
     for k_train in query_doc.keys():
-        dict_agg_100[(user_id,k_train[3].split(',')[1])] = [0.0,0.0,0.0,0.0,0.0,0.0]
+        dict_agg_100[(user_id,k_train[3].split(',')[1])] = [1.0,0.0,0.0,0.0,0.0,0.283,0.283,0.283]
     uds = dict_agg_100.keys()
     for k in query_doc_history.keys():
         d=k[3].split(",")[1]
         if (user_id,d) in uds:
-            dict_agg_100[(user_id,d)][5]+=1
+            dict_counts[(user_id,d)]+=1
             if query_doc_history[k]['score']==1:
                 dict_agg_100[(user_id,d)][0]+=1
+                dict_agg_100[(user_id,d)][5]+=1.0/query_doc_history[k]['rank']
             elif query_doc_history[k]['score']==2:
                 dict_agg_100[(user_id,d)][1]+=1
+                dict_agg_100[(user_id,d)][6]+=1.0/query_doc_history[k]['rank']
             elif query_doc_history[k]['score']==3:
                 dict_agg_100[(user_id,d)][2]+=1
+                dict_agg_100[(user_id,d)][7]+=1.0/query_doc_history[k]['rank']
             elif query_doc_history[k]['score']==4:
                 dict_agg_100[(user_id,d)][3]+=1
+                dict_agg_100[(user_id,d)][7]+=1.0/query_doc_history[k]['rank']
             elif query_doc_history[k]['score']==5:
                 dict_agg_100[(user_id,d)][4]+=1
+                dict_agg_100[(user_id,d)][7]+=1.0/query_doc_history[k]['rank']
     for k in uds:
         if dict_agg_100[k][5]>0.0:
-            dict_agg_100[k][0] = dict_agg_100[k][0]/dict_agg_100[k][5]
-            dict_agg_100[k][1] = dict_agg_100[k][1]/dict_agg_100[k][5]
-            dict_agg_100[k][2] = dict_agg_100[k][2]/dict_agg_100[k][5]
-            dict_agg_100[k][3] = dict_agg_100[k][3]/dict_agg_100[k][5]
-            dict_agg_100[k][4] = dict_agg_100[k][4]/dict_agg_100[k][5]
+            dict_agg_100[k][0] = dict_agg_100[k][0]/(dict_counts[k]+1)
+            dict_agg_100[k][1] = dict_agg_100[k][1]/(dict_counts[k]+1)
+            dict_agg_100[k][2] = dict_agg_100[k][2]/(dict_counts[k]+1)
+            dict_agg_100[k][3] = dict_agg_100[k][3]/(dict_counts[k]+1)
+            dict_agg_100[k][4] = dict_agg_100[k][4]/(dict_counts[k]+1)
+            dict_agg_100[k][5] = dict_agg_100[k][5]/(dict_counts[k]+1)
+            dict_agg_100[k][6] = dict_agg_100[k][6]/(dict_counts[k]+1)
+            dict_agg_100[k][7] = dict_agg_100[k][7]/(dict_counts[k]+1)
     return dict_agg_100
 
 """Same user, any query, same URL"""
 def aggregate_101(user_id, query_doc_history, query_doc):
     dict_agg_101 = {}
+    dict_counts= defaultdict(float)
     for k_train in query_doc.keys():
-        dict_agg_101[(user_id,k_train[3].split(',')[0])] = [0.0,0.0,0.0,0.0,0.0,0.0]
+        dict_agg_101[(user_id,k_train[3].split(',')[0])] = [1.0,0.0,0.0,0.0,0.0,0.283,0.283,0.283]
     uus = dict_agg_101.keys()
     for k in query_doc_history.keys():
         u=k[3].split(",")[0]
         if (user_id,u) in uus:
-            dict_agg_101[(user_id,u)][5]+=1
+            dict_counts[(user_id,u)]+=1
             if query_doc_history[k]['score']==1:
                 dict_agg_101[(user_id,u)][0]+=1
+                dict_agg_101[(user_id,u)][5]+=1.0/query_doc_history[k]['rank']
             elif query_doc_history[k]['score']==2:
                 dict_agg_101[(user_id,u)][1]+=1
+                dict_agg_101[(user_id,u)][6]+=1.0/query_doc_history[k]['rank']
             elif query_doc_history[k]['score']==3:
                 dict_agg_101[(user_id,u)][2]+=1
+                dict_agg_101[(user_id,u)][7]+=1.0/query_doc_history[k]['rank']
             elif query_doc_history[k]['score']==4:
                 dict_agg_101[(user_id,u)][3]+=1
+                dict_agg_101[(user_id,u)][7]+=1.0/query_doc_history[k]['rank']
             elif query_doc_history[k]['score']==5:
                 dict_agg_101[(user_id,u)][4]+=1
+                dict_agg_101[(user_id,u)][7]+=1.0/query_doc_history[k]['rank']
     for k in uus:
         if dict_agg_101[k][5]>0.0:
-            dict_agg_101[k][0] = dict_agg_101[k][0]/dict_agg_101[k][5]
-            dict_agg_101[k][1] = dict_agg_101[k][1]/dict_agg_101[k][5]
-            dict_agg_101[k][2] = dict_agg_101[k][2]/dict_agg_101[k][5]
-            dict_agg_101[k][3] = dict_agg_101[k][3]/dict_agg_101[k][5]
-            dict_agg_101[k][4] = dict_agg_101[k][4]/dict_agg_101[k][5]
+            dict_agg_101[k][0] = dict_agg_101[k][0]/(dict_counts[k]+1)
+            dict_agg_101[k][1] = dict_agg_101[k][1]/(dict_counts[k]+1)
+            dict_agg_101[k][2] = dict_agg_101[k][2]/(dict_counts[k]+1)
+            dict_agg_101[k][3] = dict_agg_101[k][3]/(dict_counts[k]+1)
+            dict_agg_101[k][4] = dict_agg_101[k][4]/(dict_counts[k]+1)
+            dict_agg_101[k][5] = dict_agg_101[k][5]/(dict_counts[k]+1)
+            dict_agg_101[k][6] = dict_agg_101[k][6]/(dict_counts[k]+1)
+            dict_agg_101[k][7] = dict_agg_101[k][7]/(dict_counts[k]+1)
     return dict_agg_101
 
 """Same user, same query, any domain"""
 def aggregate_110(user_id, query_doc_history, query_doc, query_url_set):
     dict_agg_110 = {}
+    dict_counts= defaultdict(float)
     query_set = set()
     for k_train in query_doc.keys():
         query_set.add(k_train[2])
     for q in query_set:
          for url_domain in query_url_set[q]:
-            dict_agg_110[(user_id,q,url_domain.split(',')[1])] = [0.0,0.0,0.0,0.0,0.0,0.0]
+            dict_agg_110[(user_id,q,url_domain.split(',')[1])] =[1.0,0.0,0.0,0.0,0.0,0.283,0.283,0.283]
     uqds= dict_agg_110.keys()
     for k in query_doc_history.keys():
         d=k[3].split(",")[1]
         q=k[2]
         if (user_id,q,d) in uqds:
-            dict_agg_110[(user_id,q,d)][5]+=1
+            dict_counts[(user_id,q,d)]+=1
             if query_doc_history[k]['score']==1:
                 dict_agg_110[(user_id,q,d)][0]+=1
+                dict_agg_110[(user_id,q,d)][5]+=1.0/query_doc_history[k]['rank']
             elif query_doc_history[k]['score']==2:
                 dict_agg_110[(user_id,q,d)][1]+=1
+                dict_agg_110[(user_id,q,d)][6]+=1.0/query_doc_history[k]['rank']
             elif query_doc_history[k]['score']==3:
                 dict_agg_110[(user_id,q,d)][2]+=1
+                dict_agg_110[(user_id,q,d)][7]+=1.0/query_doc_history[k]['rank']
             elif query_doc_history[k]['score']==4:
                 dict_agg_110[(user_id,q,d)][3]+=1
+                dict_agg_110[(user_id,q,d)][7]+=1.0/query_doc_history[k]['rank']
             elif query_doc_history[k]['score']==5:
                 dict_agg_110[(user_id,q,d)][4]+=1
+                dict_agg_110[(user_id,q,d)][7]+=1.0/query_doc_history[k]['rank']
     for k in uqds:
         if dict_agg_110[k][5]>0.0:
-            dict_agg_110[k][0] = dict_agg_110[k][0]/dict_agg_110[k][5]
-            dict_agg_110[k][1] = dict_agg_110[k][1]/dict_agg_110[k][5]
-            dict_agg_110[k][2] = dict_agg_110[k][2]/dict_agg_110[k][5]
-            dict_agg_110[k][3] = dict_agg_110[k][3]/dict_agg_110[k][5]
-            dict_agg_110[k][4] = dict_agg_110[k][4]/dict_agg_110[k][5]
+            dict_agg_110[k][0] = dict_agg_110[k][0]/(dict_counts[k]+1)
+            dict_agg_110[k][1] = dict_agg_110[k][1]/(dict_counts[k]+1)
+            dict_agg_110[k][2] = dict_agg_110[k][2]/(dict_counts[k]+1)
+            dict_agg_110[k][3] = dict_agg_110[k][3]/(dict_counts[k]+1)
+            dict_agg_110[k][4] = dict_agg_110[k][4]/(dict_counts[k]+1)
+            dict_agg_110[k][5] = dict_agg_110[k][5]/(dict_counts[k]+1)
+            dict_agg_110[k][6] = dict_agg_110[k][6]/(dict_counts[k]+1)
+            dict_agg_110[k][7] = dict_agg_110[k][7]/(dict_counts[k]+1)
     return dict_agg_110
 
 """Same user same query same url"""
 def aggregate_111(user_id, query_doc_history, query_doc, query_url_set):
     dict_agg_111 = {}
+    dict_counts= defaultdict(float)
     query_set = set()
     for k_train in query_doc.keys():
         query_set.add(k_train[2])
     for q in query_set:
          for url_domain in query_url_set[q]:
-            dict_agg_111[(user_id,q,url_domain.split(',')[0])] = [0.0,0.0,0.0,0.0,0.0,0.0]
+            dict_agg_111[(user_id,q,url_domain.split(',')[0])] = [1.0,0.0,0.0,0.0,0.0,0.283,0.283,0.283]
     uqus= dict_agg_111.keys()
     for k in query_doc_history.keys():
         u=k[3].split(",")[0]
         q=k[2]
         if (user_id,q,u) in uqus:
-            dict_agg_111[(user_id,q,u)][5]+=1
+            dict_counts[(user_id,q,u)]+=1
             if query_doc_history[k]['score']==1:
                 dict_agg_111[(user_id,q,u)][0]+=1
+                dict_agg_111[(user_id,q,u)][5]+=1.0/query_doc_history[k]['rank']
             elif query_doc_history[k]['score']==2:
                 dict_agg_111[(user_id,q,u)][1]+=1
+                dict_agg_111[(user_id,q,u)][6]+=1.0/query_doc_history[k]['rank']
             elif query_doc_history[k]['score']==3:
                 dict_agg_111[(user_id,q,u)][2]+=1
+                dict_agg_111[(user_id,q,u)][7]+=1.0/query_doc_history[k]['rank']
             elif query_doc_history[k]['score']==4:
                 dict_agg_111[(user_id,q,u)][3]+=1
+                dict_agg_111[(user_id,q,u)][7]+=1.0/query_doc_history[k]['rank']
             elif query_doc_history[k]['score']==5:
                 dict_agg_111[(user_id,q,u)][4]+=1
+                dict_agg_111[(user_id,q,u)][7]+=1.0/query_doc_history[k]['rank']
     for k in uqus:
         if dict_agg_111[k][5]>0.0:
-            dict_agg_111[k][0] = dict_agg_111[k][0]/dict_agg_111[k][5]
-            dict_agg_111[k][1] = dict_agg_111[k][1]/dict_agg_111[k][5]
-            dict_agg_111[k][2] = dict_agg_111[k][2]/dict_agg_111[k][5]
-            dict_agg_111[k][3] = dict_agg_111[k][3]/dict_agg_111[k][5]
-            dict_agg_111[k][4] = dict_agg_111[k][4]/dict_agg_111[k][5]
+            dict_agg_111[k][0] = dict_agg_111[k][0]/(dict_counts[k]+1)
+            dict_agg_111[k][1] = dict_agg_111[k][1]/(dict_counts[k]+1)
+            dict_agg_111[k][2] = dict_agg_111[k][2]/(dict_counts[k]+1)
+            dict_agg_111[k][3] = dict_agg_111[k][3]/(dict_counts[k]+1)
+            dict_agg_111[k][4] = dict_agg_111[k][4]/(dict_counts[k]+1)
+            dict_agg_111[k][5] = dict_agg_111[k][5]/(dict_counts[k]+1)
+            dict_agg_111[k][6] = dict_agg_111[k][6]/(dict_counts[k]+1)
+            dict_agg_111[k][7] = dict_agg_111[k][7]/(dict_counts[k]+1)
     return dict_agg_111
 
 """Add the aggregate features to feature vector"""

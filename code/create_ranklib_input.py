@@ -16,17 +16,23 @@ def create_file(user_features,feature_set, filename2):
     with open(filename2,"w") as f:
         cnt=1
         feature_file=OrderedDict()
+        user_feature_file = OrderedDict()
         prev_key=None
 
-        for line in user_features:
+        user_fields = user_features[0].split('\t')
+        for user_field in user_fields[0:len(user_fields)-1]:
+            k=user_field.replace("'","")
+            k1=k.split(":")
+            user_feature_file[k1[0]] = k1[1]
+
+        for line in user_features[1:]:
             keyset=[]
             no=1
             fields=line.split("\t")
 
         #Separate query ID first
         #Take fields[0]
-
-            key=fields[0].split(",")[1].replace("'","").replace(" ","")
+            key=fields[0].split(",")[2].replace("'","").replace(" ","")
             feature_file["qid"]=key
             for field in fields[1:len(fields)-1]:
                 k=field.replace("'","")
@@ -38,19 +44,26 @@ def create_file(user_features,feature_set, filename2):
             
             for k in keyset:
                 if(k=='aggr' and len(feature_set['aggr'])>0):
-                    indices=feature_set['aggr']
-                    interim=feature_file[k].replace("], ","--")
+                    indices=feature_set['aggr']         ##which aggregate features to add
+                    interim=feature_file[k].replace("], ","--")     ##clean the array of arrays and read required
                     interim1=interim.replace("[","")
                     interim1=interim1.replace("]","")
                     vectors=interim1.split("--")
+                    l_feats = feature_set['l']
                     for on in indices:
+                        i=0
                         for p in vectors[on].split(","):
-                           p=p.replace(" ","")
-                           f.write(str(no)+":"+str(p)+" ")
-                           no+=1
+                           if i in l_feats:
+                               p=p.replace(" ","")
+                               f.write(str(no)+":"+str(p)+" ")
+                               no+=1
+                           i+=1
                 else:
-                  feature_file[k].replace(" ","")
-                  f.write(str(no)+":"+str(feature_file[k])+" ")
+                    feature_file[k].replace(" ","")
+                    f.write(str(no)+":"+str(feature_file[k])+" ")
+                    no+=1
+            for k in user_feature_file.keys():
+                f.write(str(no)+":"+str(user_feature_file[k])+" ")
                 no+=1
             if(cnt!=len(user_features)):
                 f.write("\n")
@@ -66,17 +79,21 @@ def get_features_needed(file_name):
             key=line[0].replace(":","")
             val=line[1]
             set_on=line[1]
-            if(key!='aggr'):
+            if(key!='aggr' and key!='l'):
                 if(set_on=='1'):
                     features_on[key]=set_on
             elif(key == 'aggr'):
                     indices_old=val.split(",")
                     indices = [int(i) for i, x in enumerate(indices_old) if x == "1"]
                     features_on[key]=indices
+            elif(key == 'l'):
+                    indices_old=val.split(",")
+                    indices = [int(i) for i, x in enumerate(indices_old) if x == "1"]
+                    features_on[key]=indices
         return features_on
 
-USER_FILES="../data/user_features/"
-RANKLIB_INPUT='../data/ranklib/'
+USER_FILES="../data/user_features/dev/"
+RANKLIB_INPUT='../data/ranklib/dev/'
 
 feature_set=get_features_needed('../data/feature_list/list')
 dir_entries_users=os.listdir(USER_FILES)
@@ -87,5 +104,4 @@ for dir_entry in dir_entries:
     if os.path.isfile(dir_entry_path):
         user_vector=get_features(dir_entry_path)
         create_file(user_vector,feature_set,dir_entry_path_input)
-    
 

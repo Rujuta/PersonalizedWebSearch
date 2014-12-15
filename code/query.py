@@ -31,6 +31,16 @@ def get_urls_in_query(search_logs, query_url_set):
                     query_url_set[items[4]].add(each)
     return query_url_set
 
+''' FOR CLICK ENTROPY
+def get_clicked_urls_in_query(search_logs, query_click_url_set):
+    for log in search_logs:
+            items=log.split()
+            if items[2] == 'Q':
+                for each in items[6:]:
+                    query_click_url_set[items[4]].add(each)
+    return query_click_url_set
+'''
+
 def fill_query_doc_features(query_terms, query_counts, query_doc):
     # Fill in the number of times an item has been queried for by anyone and the no of terms in that query
         for k,v in query_doc.items():
