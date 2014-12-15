@@ -88,7 +88,7 @@ def get_features_needed(file_name):
                     x=0
                     for i in indices_old:
                         if i=='1':
-                            indices.append[x]
+                            indices.append(x)
                         x+=1
                     features_on[key]=indices
             elif(key == 'l'):
