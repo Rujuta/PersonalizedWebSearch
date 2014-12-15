@@ -49,16 +49,15 @@ Personalized web search typically uses some learning-to-rank algorithms. They us
 fall into three broad categories(Wikipedia). They are pointwise, pairwise and listwise. 
 \subsubsection{Pointwise Algorithms}
 In pointwise algorithms, each query-document pair has a numerical score associated with it. Then, a learning-to-rank algorithm can transform into a regression problem of predicting a score given a query-document pair. If the scores take values from a finite set, this can even be a classification problem. eg) Random Forests\\
-Random Forests construct a large number of decision trees and for any test sample, they output the mode value returned by running that sample through all the trees. In a tree unlike regular decision trees, the node is split based upon a random subset of features from the entire feature set. 
+Random Forests learn a large number of decision trees based on random sample sets of the data(with replacement) and for any test sample, they output the mode value returned by running that sample through all the trees. In a random forest tree unlike regular decision trees, the node is split based upon a random subset of features from the entire feature set. 
 \subsubsection{Pairwise Algorithms}
 In the pairwise approach, each pair of documents returned for a query is selected and between each member of a pair, one tries to determine the more relevant document. The goal is to minimize the inversions in a ranking.%%Reference
-eg) Ranknet
+eg) Ranknet\\
 \subsubsection{Listwise Algorithms}
 Listwise algorithms try to either find the optimum score or minimize inversions, however, they average over all queries in the training data. eg) AdaRank, LambdaMART
 \subsection{Evaluation Metric}
 There are several evaluation metrics used in learning-to-rank algorithms. We are using one called NDCG (Normalized Discounted Cumulative Gain).\\
-The evaluation metric used is NDCG (Normalized Discounted Cumulative Gain). It is a metric between 0 and 1 that evaluates the ranking order. It is given by:
-
+It is a metric between 0 and 1 that evaluates the ranking order. It is given by:
 \begin{flalign*}
 NDCG_k = \frac{DCG_k}{IDCG_k}
 \end{flalign*}
@@ -66,69 +65,77 @@ where k denotes documents uptil rank k and DCG is Discounted Cumulative Gain, gi
 \begin{flalign*}
 DCG_k = \sum_{i=1}^k{\frac{2^{rel_i} - 1}{log_2(i + 1)}}
 \end{flalign*}
-where rel is the actual relevance of the document provided by labels and i is the rank given by the algorithm. Thus, a highly relevant document ranked later in the list results in penalization and a low DCG. The Ideal DCG or IDCG gives the best ranking in accordance with the relevance values. Therefore, NDCG = 1 when the ideal ranking is obtained. 
+where rel is the actual relevance of the document provided by labels and $i$ is the rank given by the algorithm. Thus, a highly relevant document ranked later in the list results in penalization and a low DCG. The Ideal DCG or IDCG gives the best ranking in accordance with the relevance values. Therefore, NDCG = 1 when the ideal ranking is obtained. 
 
+\section{Methodology}
 
-\section{Our Approach}
-
-We attempt at personalizing a user's ranking data based on the past history of his searches. This is a problem that Yandex - a Russian search engine had proposed on Kaggle. 
-The key idea that the winning team used is creating a large number of features and then, they ran the Random Forests and LambdaMART algorithms to generate an NDCG score. 
-We are creating a subset of features that they have used. However, we have provided a mechanism for creating a configuration file that turns features on and off, hence, allowing a user to test out how various feature configurations can affect the correctness of the ranking order. We also do a comparitive study of 4 algorithms - LambaMART, Random Forests, AdaRank and Ranknet using our different feature configurations. This allows us to determine how a pointwise algorithm would perform as compared to a list wise or pair wise algorithm on the same data set.\\
-We experiment by varying different parameters used by each of these algorithms.
-
-\subsection{Background}
-
-
-
+In order to personalize user rankings, we build a large feature set of 73 features in total. We then, turn set/unset different features and run the ranking algorithms on various combinations of these features. We compare the results returned by different ranking algorithms, which is explained in detail in the result section. The features we have used are generated with the same approach as the winning team had used in the Kaggle competition. However, our data preparation techniques differ, owing to limited computational resources. Below, we explain in detail our implementation. 
 
 \subsection{Data Preparation}
 Kaggle had provided about 16 GB of training data that covered 27 days of search log history. The format of the data is as follows:\\
-\textbf{Session metadata (TypeOfRecord = M):}\\
+\fontsize{9}{12}{\textbf{Session metadata (TypeOfRecord = M):}\\
 \textit {SessionID TypeOfRecord Day USERID}\\
 \textbf{Query action (TypeOfRecord = Q or T):}\\
 \textit{SessionID TimePassed TypeOfRecord SERPID QueryID ListOfTerms ListOfURLsAndDomains}\\
 \textbf{Click action (TypeOfRecord = C):}\\
-\textit{SessionID TimePassed TypeOfRecord SERPID URLID}\\
-\subsubsection{Data Sampling}
-We had to sample the data as our system is limited to 8 GB of RAM with dual cores. We split their train data into history, train, development and test sets for a specific subset of 28 users. This led to a significant reduction in the file size with history becoming about 120K, train 60K, development and test each with 30K file size.\\ Initially we wanted to split the train data provided by Kaggle, in order, however, we realized that the users are repeated serially but not across files. Hence, we randomly assigned a user's session to one of test/dev/train or history. This has led to one limitation - we have lost the information of whether a user's session is in immediate history or anterior history. The component of 'past behavior' gets reduced to a user's generic search behavior.\\
+\textit{SessionID TimePassed TypeOfRecord SERPID URLID}\\}
 
+In the above format, the SERPID is the search's ID. The QueryID is the ID and the ListOfTerms refers to the list of terms in the query. The ListOfURLsAndDomains has a list of URLs returned for that query. One item in the list is a URL,Domain pair. This URL,Domain pair forms a document for this particular query. For every query, 10 documents are returned, thus, we have 10 query-document pairs for each query. Thereby, we will have 10 feature vectors for one query.
+\\An example data format has been shown below:\\
+
+\fontsize{8}{10}{8	M	6	5\newline
+18 0 Q 0 3771444 1823379, 1235163, 1061370, 1991523, 2140938 7885541, 943850	17062586, 1787472	17966961, 1887339	37836161, 3478295	52887117, 4315816 12350524, 1236243	39236857, 3559506 36287475, 3400946	41939085, 3715627 53975922, 4374403\\
+18 19 C 0 12350524}\\
+\subsubsection{Data Sampling}
+We had to sample the data as our system is limited to 8 GB of RAM with dual cores. We split their train data into history, train, development and test sets for a specific subset of 28 users. This led to a significant reduction in the file size with history becoming about 120K, train 60K, development and test each with 30K file size.\\ Initially we wanted to split the train data provided by Kaggle, in order, however, we realized that the users are repeated serially but not across files. Hence, we randomly assigned a user's session to one of test/dev/train or history. This has led to one limitation - we have lost the information of whether a user's session is in immediate history or anterior history. The component of 'past behavior' which could be broken down into recent past and history gets reduced to a user's generic search behavior from history logs.\\
 \subsection{Feature Engineering}
-Our aim in this exercise is to engineer features that would lead to an improvement in the NDCG score. We generate a feature vector for query-document pair we find in the input data. Here document refers to a URL,domain combination. For each vector, we calculate a relevance label. The relevance label is based upon two factors - whether a user clicks on the URL and if he clicks, what is the dwell time or time spent on that URL and the next click. The relevance labels are in table below:
-\begin{tabular}{l | c} 
+Our aim in this exercise is to engineer features and experiment with the NDCG score. We generate a feature vector for each query-document pair we find in the input data. Here document refers to a URL,domain combination. For each vector, we calculate a relevance label. The relevance label is based upon two factors - whether a user clicks on the URL and if he clicks, what is the dwell time for that URL (time spent on that URL and the next click). The relevance labels are calculated as in table below:\\
+\fontsize{8}{10}{\begin{tabular}{l | c} 
 1 & URL missed\\
 2 & URL skipped\\
 3 & URL clicked with satisfaction 0\\
 4 & URL clicked with satisfaction 1\\
 5 & URL clicked with satisfaction 2 \\
-\end{tabular}\\
+\end{tabular}}\\
 \\
-For any query, a list of URLs is returned. Now, the log file contains a field called time passed, which indicates how much time has passed from the beginning of that session, uptill that query. If a URL is clicked on the previous line in the same session, before another action, we can find the dwell time for that URL as  the difference of the time passed field on this action and the time passed field for the click action on that URL.\\
-A dwell time between 50 and 300 units of time, indicates a relevance score of 4, dwell time of more than 300 units, indicates relevance score of 5 and a dwell time lesser than 50 units, indicates relevance score of 3. Moreover, the last click in every session, automatically is assigned a relevance score of 5, without considering the dwell time. We assign the missed and skipped scores, based on the \textit{Cascade Hypothesis}. This states that, all URLs above a clicked URL have been examined (and skipped) and all URLs below the lowest clicked URL haven't been examined (and missed). Thus, all skipped URLs are given scores of 2 and all missed URLs are given the lowest score or score 1.\\
+For any query, a list of URLs is returned. The log file contains a field called time passed, which indicates how much time has passed from the beginning of that session, uptill that query/click. If a URL is clicked on the previous line in the same session, we can find the dwell time for that URL as  the difference of the time passed field on the current log and the time passed field for the click action log for that URL.\\
+A dwell time between 50 and 300 units of time, indicates a relevance score of 4(click with satisfaction 1), dwell time of more than 300 units(satisfaction 2), indicates relevance score of 5 and a dwell time lesser than 50 units(satisfaction 1), indicates relevance score of 3. Moreover, the last click in every session, automatically is assigned a relevance score of 5, without considering the dwell time. We assign the missed and skipped scores, based on the \textit{Cascade Hypothesis}(Reference). This states that, all URLs above a clicked URL have been examined (and skipped) and all URLs below the lowest clicked URL haven't been examined (and missed). Thus, all skipped URLs are given scores of 2 and all missed URLs are given the lowest score or score 1.\\
 This way, we assign a relevance label to each query-document pair.  
 We have broadly divided our features into three categories:\\
-\begin{enumerate}
-\item Generic features - these features are not specific to any user in particular. Features falling in this category are:\\
- -Initial rank of a document for a particular query. This rank is what would be returned by a non-personalized search engine. This rank is all the information we have about page-rank or document similarity, that Yandex might have used to compute the original ranking.\newline
- - The frequency of a particular query. This gives us information as to how popular a particular query is\\
- - The number of terms in a query. 
- \item Aggregate features - these features can be user specific or generic, however, they are computed over all the history data, based on a certain predicate. When a particular query-document is encountered in the training or development set, we consider a set of predicates to filter logs and produce features on this subset of logs. The predicate is a conjunction of conditions on :\\
+\textbf {Generic features} - these features are not specific to any user in particular. Features falling in this category are:\\
+Initial rank of a document for a particular query. This rank is what would be returned by a non-personalized search engine. This rank is all the information we have about page-rank or document similarity, that Yandex might have used to compute the original ranking.\newline
+The frequency of a particular query. This gives us information as to how popular a particular query is\\
+The number of terms in a query. \\
+\textbf{Aggregate features} - these features can be user specific or generic, however, they are computed over all the history data, based on a certain predicate. Each of these features is basically a probability of the document being clicked, missed or skipped, conditioned on a predicate. When a particular query-document is encountered in the training or development set, we consider a set of predicates to filter logs and produce features on this subset of logs. The predicate is a conjunction of conditions on :\\
  - the url (same url or same domain)\\
  - the user submitting the query ( same user or any user)\\
  - the query (same query or any query) \\
- Thus, if we encounter a query-document combination $<q_1,d_1>$ for some user $u$ we can choose the predicate \textit User u, queried for $q_1$ and got a document $d_1$. Here document refers to a URL,Domain combination. So, the feature we will calculate is:\\
+ Thus, if we encounter a query-document combination $<q_1,d_1>$ for some user $u$ we can choose the predicate, $PR$ \textit{User u, queried for $q_1$ and got a document $d_1$}. So, the feature we will calculate is:\\
  \begin{flalign*}
  P(outcome=\ell|PR)=\frac{Count(\ell,PR) + p_\ell}{Count(PR)+\sum_{\ell^\prime}p_{\ell^\prime}}
 \end{flalign*}  
-There are total of 5 possible outcomes - the user either missed or skipped the URL returned, or he clicked it with a satisfaction of 0 or 1 or 2. Given a query-document, the subsequent feature for this pair, given the example predicate above and an outcome of 'skipped'  would be probability that this URL was skipped given that the same user queried for the same URL previously. Similarly, for a particular predicate there can be 5 possible features, one for each outcome. In a total, we have 8 possible predicates, thus leading to a maximum of 40 possible features. 
-\item User specific features - These features try to learn a user's click habits. They are:\\
-- Number of times the user clicked on returned URLs that were in ranks ${1,2}$ or in ranks $3,4,5$ or in ranks ${6,7,8,9,10}$. These lead to 3 features per user.
-\end{enumerate}
+There are total of 5 possible outcomes - the user either missed or skipped the URL returned, or he clicked it with a satisfaction of 0 or 1 or 2. Given a query-document, the subsequent feature for this pair, given the example predicate above and an outcome of 'skipped'  would be probability that this URL was skipped given that the same user queried for the same URL previously.\\
+Similarly, for a particular predicate there can be 5 possible features, one for each outcome. In a total, we have 8 possible predicates, thus leading to a maximum of 40 possible features.\\ 
+Here, we have smoothed the probability using additive smoothing. This is because, the subset returned on this predicate might be empty. The additive smoothing assumes that all URLs have been missed once. Hence, $p_\ell$ represents a prior as is defined as $p_\ell=1$ if $\ell$ is Miss and 0 otherwise.\\
+Moreover, the conditional probabilities do not take into account the original rank of displays. This rank, adds a large bias, as a document ranked 1, is more likely to be clicked than one ranked 10. Hence, another feature called $MRR$ has been calculated for the Miss, Skip and Click occurrences. It is defined as the reciprocal value of the harmonic mean on the URL of the ranking(Ref). \\
+The MRR is calculated as:\\
+ \begin{flalign*}
+MRR(\ell,PR)=\frac{\sum_{r \in R_{\ell,PR}} \frac{1}{r} + 0.283}{Count(\ell,PR)+1}
+\end{flalign*} %%% Please explain MRR in further detail
+User specific features - These features try to learn a user's click habits. They are:\\
+- Number of times the user clicked on returned URLs that were in ranks ${1,2}$ or in ranks ${3,4,5}$ or in ranks ${6,7,8,9,10}$. These lead to 3 features per user.\\
 We generated all of these features per user and created a user's feature vector. The format of our file is:\\
-%%Reduce the size here
-\textit {('42', '247', '8544155', '48886358,4122937')	rank:1	pos:1	terms:1	frequency:1	score:5	aggr:[[0.0, 0.0, 0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]]}
+\newline
+\fontsize{8}{10}{\\
+\textbf{numQuery}:11	 \textbf{numAvgTerms}:2.36363636364 \textbf{numClicks6}:0 \\
+\textbf{numClicks35}:6 \textbf{numClicks12}:9	
+('2452324', '14603791', '2868731', '55955179,4457118')\\
+\textbf{rank}:1	\textbf{pos}:1	\textbf{terms}:5	\textbf{frequency}:0 \textbf{score}:2\\
+\textbf{aggr}:[[1.0, 0.0, 0.0, 0.0, 0.0, 0.283, 0.283, 0.283], [1.0, 0.0, 0.0, 0.0, 0.0, 0.283, 0.283, 0.283], [1.0, 0.0, 0.0, 0.0, 0.0, 0.283, 0.283, 0.283], [1.0, 0.0, 0.0, 0.0, 0.0, 0.283, 0.283, 0.283], [1.0, 0.0, 0.0, 0.0, 0.0, 0.283, 0.283, 0.283], [1.0, 0.0, 0.0, 0.0, 0.0, 0.283, 0.283, 0.283], [1.0, 0.0, 0.0, 0.0, 0.0, 0.283, 0.283, 0.283], [1.0, 0.0, 0.0, 0.0, 0.0, 0.283, 0.283, 0.283]]}\\
+\newline
 The initial tuple is the query-document pair information, along with user and session data. Following that, are a set of key-value pairs for all the features we consider.\\
 However, we want to be able to turn features on and off, as well as transform this data into the format a LETOR data set follows as this is accepted by the RankLib library.\\
-For this we define a configuration file, that has all the feature keys defined, with a value of 1 or 0 against it, that indicates if that feature needs to be considered or not. Since the aggregate features are many, we defined a comma separated string against it. A string of 0,0,1,0,0,0,1,0 indicates that we consider the predicate with value 3 or binary 011 that translates into <Same domain - Same Query- Same User>  and the predicate with value 6 or 110 that translates into <Same URL - Same Query - Any User>. \\ 
+For this we define a configuration file, that has all the feature keys defined, with a value of 1 or 0 against it, that indicates if that feature needs to be considered or not. Since the aggregate features are many, we defined a comma separated string against it. A string of 0,0,1,0,0,0,1,0 indicates that we consider the predicate with value 3 or binary 011 that translates into (Same domain - Same Query- Same User)  and the predicate with value 6 or 110 that translates into (Same URL - Same Query - Any User). \\ 
 We then run a script that reads both a the configuration file and the user defined feature file to create a LETOR data set input file per user. Now, we can actually run the algorithms on our data.
 \subsection{Details of Tests}
 
@@ -140,7 +147,7 @@ We then run a script that reads both a the configuration file and the user defin
 
 
 \subsubsection*{Milestones achieved}
-Out of the milestones, that we had stated, we have successfully managed to get the most optimum feature combination by setting and unsetting different feature combinations. We have also been able to carry out a comparitive study over 4 different ranking algorithms as we had stated. %% note on problems encountered in the when to personalize module - write about click entropy and why it couldn't be calculated.
+Out of the milestones, that we had stated, we have successfully managed to get the most optimum feature combination by set/unset of different feature combinations. We have also been able to carry out a comparitive study over 4 different ranking algorithms as we had stated. %% note on problems encountered in the when to personalize module - write about click entropy and why it couldn't be calculated.
 
 \begin{thebibliography}{}
 

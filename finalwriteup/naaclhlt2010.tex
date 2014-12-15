@@ -34,22 +34,27 @@
 \begin{document}
 \maketitle
 \begin{abstract}
- We personalize web search rankings for a user by analyzing user search history from Yandex' search engine logs. We have in total 50 features, which we turn on and off for different runs and analyze the contribution of each feature to the resultant NDCG score. We compare the performance in terms of ranking accuracy using various Learning To Rank Algorithms - Random Forests, LambdaMART, Ranknet and AdaRank for a given set of features. 
+Our project aims at personalizing web search rankings of a user by analyzing user search history from Yandex' search engine logs. We have built a total of 73 features on the log data, which we turn on and off for different runs of the ranking algorithms. We analyze the contribution of different sets of features to the resultant NDCG score. We compare the performance in terms of the NDCG score using various Learning To Rank Algorithms - Random Forests, LambdaMART, Ranknet and AdaRank for a given set of features. We also tune the parameters of the algorithms - number of trees, learning rate, hidden nodes per layer and number of hidden layers and then, observe the change in the NDCG scores. 
 \end{abstract}
 
 \section{Introduction}
-Learning to Rank is a technique that constructs ranking models for Information Retrieval Systems. The training data consists of a set of query-document pairs. Each query-document pair forms one data point and is associated with a feature vector. This pair is given a relevance score and in the training data, the ranking is associated with an ordering over these relevance scores. The task of a learning to rank model, is to assign a relevance score to each query-document pair in the test data and thereby, create a permutation over the different documents returned for a particular query which is similar to the ordering found in the train data. Personalized rankings, re-rank the returned results in an order that would be preferable to a given user. The preference is learnt from a user's past search history. It can also be learnt from his searches and clicks in the same sessions or in anterior sessions.
+Learning-to-rank is a technique that constructs ranking models for Information Retrieval Systems. The training data consists of a set of query-document\footnote{Document and URL is used interchangeably} pairs. Each query-document pair forms one data point and is associated with a feature vector. This pair is given a relevance score and in the training data, the ranking is associated with an ordering over these relevance scores. The task of a learning-to-rank model, is to assign a relevance score to each query-document pair in the test data and thereby, create a permutation over the different documents returned for a particular query. Personalized rankings, re-rank the returned results in an order that would be preferable to a given user. The preference is learnt from a user's past search history, by means of user specific and generic features. \\
+\subsubsection{Background}
+Our project was essentially a Kaggle competition sponsored by the Russian search engine Yandex. We borrow heavily in terms of approach from the winning team of the competition.(Dataiku's solution). However, the features they used are not the same in entirety with our features. Our aim differs from theirs, in that, we intend to measure how different learning to rank algorithms can perform, in the task of personalized web search. 
 \section{Related Work}
-
+Personalized web search has been approached in various ways. Some approaches, aim at using only the user's current session history at learning ranking, taking into consideration, the current context(Ref). There are others, which look at user's past history, disregarding the current context. User clicks have been observed to be most informative in predicting rankings(Ref). The satisfied-clicks(SAT-clicks)() have become a standard in evaluating personalized search systems. Some literature() has shown that not all queries can be personalized. Navigational queries, that are straightforward queries, aimed at accessing a unique URL need not be personalized. \\
+Our approach, uses user's historical data but does not explicitly separate the current session of user from the previous sessions. %% Do we write this ??? Although we intended to generate different features for anterior history and current session history, owing to the large volume of data we decided against it. 
 \subsection{Algorithms}
-Typically, learning to rank algorithms fall into three broad categories. They are pointwise, pairwise and listwise. 
+Personalized web search typically uses some learning-to-rank algorithms. They usually 
+fall into three broad categories(Wikipedia). They are pointwise, pairwise and listwise. 
 \subsubsection{Pointwise Algorithms}
-In pointwise algorithms, each query-document pair has a numerical score associated with it. Then, a learning-to-rank algorithm can transform into a regression problem of predicting a score given a query-document pair. If the scores take values from a finite set, this can even be a classification problem. Examples of pointwise algorithms are Random Forests. 
+In pointwise algorithms, each query-document pair has a numerical score associated with it. Then, a learning-to-rank algorithm can transform into a regression problem of predicting a score given a query-document pair. If the scores take values from a finite set, this can even be a classification problem. eg) Random Forests\\
+Random Forests construct a large number of decision trees and for any test sample, they output the mode value returned by running that sample through all the trees. In a tree unlike regular decision trees, the node is split based upon a random subset of features from the entire feature set. 
 \subsubsection{Pairwise Algorithms}
 In the pairwise approach, each pair of documents returned for a query is selected and between each member of a pair, one tries to determine the more relevant document. The goal is to minimize the inversions in a ranking.%%Reference
-Example of pairwise algorithm is Ranknet.
+eg) Ranknet
 \subsubsection{Listwise Algorithms}
-Listwise algorithms try to either find the optimum score or minimize inversions, however, they average over all queries in the training data. LambdaMART and AdaRank are examples of listwise algorithms.
+Listwise algorithms try to either find the optimum score or minimize inversions, however, they average over all queries in the training data. eg) AdaRank, LambdaMART
 \subsection{Evaluation Metric}
 There are several evaluation metrics used in learning-to-rank algorithms. We are using one called NDCG (Normalized Discounted Cumulative Gain).\\
 The evaluation metric used is NDCG (Normalized Discounted Cumulative Gain). It is a metric between 0 and 1 that evaluates the ranking order. It is given by:
@@ -77,246 +82,83 @@ We experiment by varying different parameters used by each of these algorithms.
 
 
 \subsection{Data Preparation}
-\label{sect:pdf}
-
-For the production of the electronic manuscript you must use Adobe's
-Portable Document Format (PDF). This format can be generated from
-postscript files: on Unix systems, you can use {\tt ps2pdf} for this
-purpose; under Microsoft Windows, you can use Adobe's Distiller, or
-if you have cygwin installed, you can use {\tt dvipdf} or
-{\tt ps2pdf}.  Note 
-that some word processing programs generate PDF which may not include
-all the necessary fonts (esp. tree diagrams, symbols). When you print
-or create the PDF file, there is usually an option in your printer
-setup to include none, all or just non-standard fonts.  Please make
-sure that you select the option of including ALL the fonts.  {\em
-  Before sending it, test your {\/\em PDF} by printing it from a
-  computer different from the one where it was created}. Moreover,
-some word processor may generate very large postscript/PDF files,
-where each page is rendered as an image. Such images may reproduce
-poorly.  In this case, try alternative ways to obtain the postscript
-and/or PDF.  One way on some systems is to install a driver for a
-postscript printer, send your document to the printer specifying
-``Output to a file'', then convert the file to PDF.
-
-For reasons of uniformity, Adobe's {\bf Times Roman} font should be
-used. In \LaTeX2e{} this is accomplished by putting
-
-\begin{quote}
-\begin{verbatim}
-\usepackage{times}
-\usepackage{latexsym}
-\end{verbatim}
-\end{quote}
-in the preamble.
-
-Additionally, it is of utmost importance to specify the {\bf
-  US-Letter format} (8.5in $\times$ 11in) when formatting the paper.
-When working with {\tt dvips}, for instance, one should specify {\tt
-  -t letter}.
-
-Print-outs of the PDF file on US-Letter paper should be identical to the
-hardcopy version.  If you cannot meet the above requirements about the
-production of your electronic submission, please contact the
-publication chairs above  as soon as possible.
-
+Kaggle had provided about 16 GB of training data that covered 27 days of search log history. The format of the data is as follows:\\
+\textbf{Session metadata (TypeOfRecord = M):}\\
+\textit {SessionID TypeOfRecord Day USERID}\\
+\textbf{Query action (TypeOfRecord = Q or T):}\\
+\textit{SessionID TimePassed TypeOfRecord SERPID QueryID ListOfTerms ListOfURLsAndDomains}\\
+\textbf{Click action (TypeOfRecord = C):}\\
+\textit{SessionID TimePassed TypeOfRecord SERPID URLID}\\
+\subsubsection{Data Sampling}
+We had to sample the data as our system is limited to 8 GB of RAM with dual cores. We split their train data into history, train, development and test sets for a specific subset of 28 users. This led to a significant reduction in the file size with history becoming about 120K, train 60K, development and test each with 30K file size.\\ Initially we wanted to split the train data provided by Kaggle, in order, however, we realized that the users are repeated serially but not across files. Hence, we randomly assigned a user's session to one of test/dev/train or history. This has led to one limitation - we have lost the information of whether a user's session is in immediate history or anterior history. The component of 'past behavior' gets reduced to a user's generic search behavior.\\
 
 \subsection{Feature Engineering}
-\label{ssec:layout}
-
-Format manuscripts two columns to a page, in the manner these
-instructions are formatted. The exact dimensions for a page on US-letter
-paper are:
-
-\begin{itemize}
-\item Left and right margins: 1in
-\item Top margin:1in
-\item Bottom margin: 1in
-\item Column width: 3.15in
-\item Column height: 9in
-\item Gap between columns: 0.2in
-\end{itemize}
-
-\noindent Papers should not be submitted on any other paper size. Exceptionally,
-authors for whom it is \emph{impossible} to format on US-Letter paper,
-may format for \emph{A4} paper. In this case, they should keep the \emph{top}
-and \emph{left} margins as given above, use the same column width,
-height and gap, and modify the bottom and right margins as necessary.
-Note that the text will no longer be centered.
-
-\subsection{Libraries and Code}
-\label{ssec:first}
-
-Center the title, author's name(s) and affiliation(s) across both
-columns. Do not use footnotes for affiliations.  Do not include the
-paper ID number assigned during the submission process. 
-Use the two-column format only when you begin the abstract.
-
-{\bf Title}: Place the title centered at the top of the first page, in
-a 15 point bold font.  (For a complete guide to font sizes and styles, see Table~\ref{font-table}.)
-Long title should be typed on two lines without
-a blank line intervening. Approximately, put the title at 1in from the
-top of the page, followed by a blank line, then the author's names(s),
-and the affiliation on the following line.  Do not use only initials
-for given names (middle initials are allowed). Do not format surnames
-in all capitals (e.g., ``Leacock,'' not ``LEACOCK'').  The affiliation should
-contain the author's complete address, and if possible an electronic
-mail address. Leave about 0.75in between the affiliation and the body
-of the first page.
-{\bf Abstract}: Type the abstract at the beginning of the first
-column.  The width of the abstract text should be smaller than the
-width of the columns for the text in the body of the paper by about
-0.25in on each side.  Center the word {\bf Abstract} in a 12 point
-bold font above the body of the abstract. The abstract should be a
-concise summary of the general thesis and conclusions of the paper.
-It should be no longer than 200 words.  The abstract text should be in 10 point font.
-
-{\bf Text}: Begin typing the main body of the text immediately after
-the abstract, observing the two-column format as shown in 
-the present document.  Do not include page numbers.
-
-{\bf Indent} when starting a new paragraph. For reasons of uniformity,
-use Adobe's {\bf Times Roman} fonts, with 11 points for text and 
-subsection headings, 12 points for section headings and 15 points for
-the title.  If Times Roman is unavailable, use {\bf Computer Modern
-  Roman} (\LaTeX2e{}'s default; see section \ref{sect:pdf} above).
-Note that the latter is about 10\% less dense than Adobe's Times Roman
-font.
-
-\subsection{Problems Encountered}
-
-{\bf Headings}: Type and label section and subsection headings in the
-style shown on the present document.  Use numbered sections (Arabic
-numerals) in order to facilitate cross references. Number subsections
-with the section number and the subsection number separated by a dot,
-in Arabic numerals. 
-
-{\bf Citations}: Citations within the text appear
-in parentheses as~\cite{Gusfield:97} or, if the author's name appears in
-the text itself, as Gusfield~\shortcite{Gusfield:97}. 
-Append lowercase letters to the year in cases of ambiguities.  
-Treat double authors as in~\cite{Aho:72}, but write as 
-in~\cite{Chandra:81} when more than two authors are involved. 
-Collapse multiple citations as in~\cite{Gusfield:97,Aho:72}.
-
-\textbf{References}: Gather the full set of references together under
-the heading {\bf References}; place the section before any Appendices,
-unless they contain references. Arrange the references alphabetically
-by first author, rather than by order of occurrence in the text.
-Provide as complete a citation as possible, using a consistent format,
-such as the one for {\em Computational Linguistics\/} or the one in the 
-{\em Publication Manual of the American 
-Psychological Association\/}~\cite{APA:83}.  Use of full names for
-authors rather than initials is preferred.  A list of abbreviations
-for common computer science journals can be found in the ACM 
-{\em Computing Reviews\/}~\cite{ACM:83}.
-
-The \LaTeX{} and Bib\TeX{} style files provided roughly fit the
-American Psychological Association format, allowing regular citations, 
-short citations and multiple citations as described above.
-
-{\bf Appendices}: Appendices, if any, directly follow the text and the
-references (but see above).  Letter them in sequence and provide an
-informative title: {\bf Appendix A. Title of Appendix}.
-
-\textbf{Acknowledgment} sections should go as a last (unnumbered) section immediately
-before the references.  
-
+Our aim in this exercise is to engineer features that would lead to an improvement in the NDCG score. We generate a feature vector for query-document pair we find in the input data. Here document refers to a URL,domain combination. For each vector, we calculate a relevance label. The relevance label is based upon two factors - whether a user clicks on the URL and if he clicks, what is the dwell time or time spent on that URL and the next click. The relevance labels are in table below:
+\begin{tabular}{l | c} 
+1 & URL missed\\
+2 & URL skipped\\
+3 & URL clicked with satisfaction 0\\
+4 & URL clicked with satisfaction 1\\
+5 & URL clicked with satisfaction 2 \\
+\end{tabular}\\
+\\
+For any query, a list of URLs is returned. Now, the log file contains a field called time passed, which indicates how much time has passed from the beginning of that session, uptill that query. If a URL is clicked on the previous line in the same session, before another action, we can find the dwell time for that URL as  the difference of the time passed field on this action and the time passed field for the click action on that URL.\\
+A dwell time between 50 and 300 units of time, indicates a relevance score of 4, dwell time of more than 300 units, indicates relevance score of 5 and a dwell time lesser than 50 units, indicates relevance score of 3. Moreover, the last click in every session, automatically is assigned a relevance score of 5, without considering the dwell time. We assign the missed and skipped scores, based on the \textit{Cascade Hypothesis}. This states that, all URLs above a clicked URL have been examined (and skipped) and all URLs below the lowest clicked URL haven't been examined (and missed). Thus, all skipped URLs are given scores of 2 and all missed URLs are given the lowest score or score 1.\\
+This way, we assign a relevance label to each query-document pair.  
+We have broadly divided our features into three categories:\\
+\begin{enumerate}
+\item Generic features - these features are not specific to any user in particular. Features falling in this category are:\\
+ -Initial rank of a document for a particular query. This rank is what would be returned by a non-personalized search engine. This rank is all the information we have about page-rank or document similarity, that Yandex might have used to compute the original ranking.\newline
+ - The frequency of a particular query. This gives us information as to how popular a particular query is\\
+ - The number of terms in a query. 
+ \item Aggregate features - these features can be user specific or generic, however, they are computed over all the history data, based on a certain predicate. When a particular query-document is encountered in the training or development set, we consider a set of predicates to filter logs and produce features on this subset of logs. The predicate is a conjunction of conditions on :\\
+ - the url (same url or same domain)\\
+ - the user submitting the query ( same user or any user)\\
+ - the query (same query or any query) \\
+ Thus, if we encounter a query-document combination $<q_1,d_1>$ for some user $u$ we can choose the predicate \textit User u, queried for $q_1$ and got a document $d_1$. Here document refers to a URL,Domain combination. So, the feature we will calculate is:\\
+ \begin{flalign*}
+ P(outcome=\ell|PR)=\frac{Count(\ell,PR) + p_\ell}{Count(PR)+\sum_{\ell^\prime}p_{\ell^\prime}}
+\end{flalign*}  
+There are total of 5 possible outcomes - the user either missed or skipped the URL returned, or he clicked it with a satisfaction of 0 or 1 or 2. Given a query-document, the subsequent feature for this pair, given the example predicate above and an outcome of 'skipped'  would be probability that this URL was skipped given that the same user queried for the same URL previously. Similarly, for a particular predicate there can be 5 possible features, one for each outcome. In a total, we have 8 possible predicates, thus leading to a maximum of 40 possible features. 
+\item User specific features - These features try to learn a user's click habits. They are:\\
+- Number of times the user clicked on returned URLs that were in ranks ${1,2}$ or in ranks $3,4,5$ or in ranks ${6,7,8,9,10}$. These lead to 3 features per user.
+\end{enumerate}
+We generated all of these features per user and created a user's feature vector. The format of our file is:\\
+%%Reduce the size here
+\textit {('42', '247', '8544155', '48886358,4122937')	rank:1	pos:1	terms:1	frequency:1	score:5	aggr:[[0.0, 0.0, 0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]]}
+The initial tuple is the query-document pair information, along with user and session data. Following that, are a set of key-value pairs for all the features we consider.\\
+However, we want to be able to turn features on and off, as well as transform this data into the format a LETOR data set follows as this is accepted by the RankLib library.\\
+For this we define a configuration file, that has all the feature keys defined, with a value of 1 or 0 against it, that indicates if that feature needs to be considered or not. Since the aggregate features are many, we defined a comma separated string against it. A string of 0,0,1,0,0,0,1,0 indicates that we consider the predicate with value 3 or binary 011 that translates into <Same domain - Same Query- Same User>  and the predicate with value 6 or 110 that translates into <Same URL - Same Query - Any User>. \\ 
+We then run a script that reads both a the configuration file and the user defined feature file to create a LETOR data set input file per user. Now, we can actually run the algorithms on our data.
 \subsection{Details of Tests}
 
-{\bf Footnotes}: Put footnotes at the bottom of the page. They may
-be numbered or referred to by asterisks or other
-symbols.\footnote{This is how a footnote should appear.} Footnotes
-should be separated from the text by a line.\footnote{Note the
-line separating the footnotes from the text.}  Footnotes should be in 9 point font.
+
 
 \subsection{Results}
 
-{\bf Illustrations}: Place figures, tables, and photographs in the
-paper near where they are first discussed, rather than at the end, if
-possible.  Wide illustrations may run across both columns and should be placed at
-the top of a page. Color illustrations are discouraged, unless you have verified that 
-they will be understandable when printed in black ink.
 
-\begin{table}
-\begin{center}
-\begin{tabular}{|l|rl|}
-\hline \bf Type of Text & \bf Font Size & \bf Style \\ \hline
-paper title & 15 pt & bold \\
-author names & 12 pt & bold \\
-author affiliation & 12 pt & \\
-the word ``Abstract'' & 12 pt & bold \\
-section titles & 12 pt & bold \\
-document text & 11 pt  &\\
-abstract text & 10 pt & \\
-captions & 10 pt & \\
-bibliography & 10 pt & \\
-footnotes & 9 pt & \\
-\hline
-\end{tabular}
-\end{center}
-\caption{\label{font-table} Font guide. }
-\end{table}
 
-{\bf Captions}: Provide a caption for every illustration; number each one
-sequentially in the form:  ``Figure 1. Caption of the Figure.'' ``Table 1.
-Caption of the Table.''  Type the captions of the figures and 
-tables below the body, using 10 point text.  
 
-\section{Length of Submission}
-\label{sec:length}
-
-The NAACL HLT 2010 main conference accepts submissions of long papers
-and short papers.  The maximum length of a long paper manuscript is
-eight (8) pages of content and one (1) additional page of references
-\emph{only} (appendices count against the eight pages, not the
-additional one page).  The maximum length of a short paper manuscript
-is four (4) pages including references.  For both long and short
-papers, all illustrations, references, and appendices must be
-accommodated within these page limits, observing the formatting
-instructions given in the present document.  Papers that do not
-conform to the specified length and formatting requirements are
-subject to be rejected without review.
-
-% Up to two (2) additional pages may be purchased from ACL at the
-% price of \$250 per page; please contact the publication chairs above
-% for more information about this option.
-
-\section*{References}
-
-Do not number the acknowledgment section.
+\subsubsection*{Milestones achieved}
+Out of the milestones, that we had stated, we have successfully managed to get the most optimum feature combination by setting and unsetting different feature combinations. We have also been able to carry out a comparitive study over 4 different ranking algorithms as we had stated. %% note on problems encountered in the when to personalize module - write about click entropy and why it couldn't be calculated.
 
 \begin{thebibliography}{}
 
-\bibitem[\protect\citename{Aho and Ullman}1972]{Aho:72}
-Alfred~V. Aho and Jeffrey~D. Ullman.
-\newblock 1972.
-\newblock {\em The Theory of Parsing, Translation and Compiling}, volume~1.
-\newblock Prentice-{Hall}, Englewood Cliffs, NJ.
 
-\bibitem[\protect\citename{{American Psychological Association}}1983]{APA:83}
-{American Psychological Association}.
-\newblock 1983.
-\newblock {\em Publications Manual}.
-\newblock American Psychological Association, Washington, DC.
+\bibitem[1] P.Masurel,K.Lefevre-Hasegawa, C.Bourguignat, M.Scordia 
+\newblock {\em Dataiku’s Solution to Yandex’s Personalized Web Search}
 
-\bibitem[\protect\citename{{Association for Computing Machinery}}1983]{ACM:83}
-{Association for Computing Machinery}.
-\newblock 1983.
-\newblock {\em Computing Reviews}, 24(11):503--512.
+%% bibitem[2] %% \url{http://en.wikipedia.org/wiki/Learning\\_to\\_rank/}
 
-\bibitem[\protect\citename{Chandra \bgroup et al.\egroup }1981]{Chandra:81}
-Ashok~K. Chandra, Dexter~C. Kozen, and Larry~J. Stockmeyer.
-\newblock 1981.
-\newblock Alternation.
-\newblock {\em Journal of the Association for Computing Machinery},
-  28(1):114--133.
+\bibitem[2] C.J.C. Burges. From RankNet to LambdaRank to
+LambdaMART: An Overview. Technical Report, Microsoft Research, 2010.
 
-\bibitem[\protect\citename{Gusfield}1997]{Gusfield:97}
-Dan Gusfield.
-\newblock 1997.
-\newblock {\em Algorithms on Strings, Trees and Sequences}.
-\newblock Cambridge University Press, Cambridge, UK.
+\bibitem[3] Ranklib.
+\url{http://people.cs.umass.edu/~vdang/ranklib.html}
+
+\bibitem[4] D.Sontag et al. Probabilistic Models for Personalizing Web Search.
+Microsoft Research
+
 
 \end{thebibliography}
 

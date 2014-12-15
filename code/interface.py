@@ -121,8 +121,8 @@ for user_id in user_objects_train.keys():
     dict_agg_101 = generic.aggregate_101(user_id, query_doc_history, query_doc)
     dict_agg_110 = generic.aggregate_110(user_id, query_doc_history, query_doc, query_url_set)
     dict_agg_111 = generic.aggregate_111(user_id, query_doc_history, query_doc, query_url_set)
-    #if user_id in user_objects_history.keys():
-     #   user_details = user.add_user_features(user_details, user_objects_history[user_id])
+    if user_id in user_objects_history.keys():
+        user_details = user.add_user_features(user_details, user_objects_history[user_id])
     query_doc=generic.add_aggr_features(user_id,query_doc, dict_agg_000, dict_agg_001, dict_agg_010,dict_agg_011, dict_agg_100, dict_agg_101, dict_agg_110,dict_agg_111)
     writefile.create_input_file(user_id,query_doc) #,user_details
     print "wrote file"
