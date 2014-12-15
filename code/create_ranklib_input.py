@@ -85,15 +85,16 @@ def get_features_needed(file_name):
             elif(key == 'aggr'):
                     indices_old=val.split(",")
                     indices = [int(i) for i, x in enumerate(indices_old) if x == "1"]
-                    features_on[key]=indices
+                    if indices == '0':
+                        features_on[key]=[]
             elif(key == 'l'):
-                    indices_old=val.split(",")
-                    indices = [int(i) for i, x in enumerate(indices_old) if x == "1"]
-                    features_on[key]=indices
+                    indices_old1=val.split(",")
+                    indices1 = [int(i) for i, x in enumerate(indices_old1) if x == "1"]
+                    features_on[key]=indices1
         return features_on
 
-USER_FILES="../data/user_features/dev/"
-RANKLIB_INPUT='../data/ranklib/dev/'
+USER_FILES="../data/user_features/train/"
+RANKLIB_INPUT='../data/ranklib/train/'
 
 feature_set=get_features_needed('../data/feature_list/list')
 dir_entries_users=os.listdir(USER_FILES)
