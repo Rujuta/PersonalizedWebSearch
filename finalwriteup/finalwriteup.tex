@@ -19,6 +19,7 @@
 \usepackage{amsmath}
 \usepackage{amssymb}
 \usepackage{hyperref}
+\graphicspath{ {/home/rujuta/Pictures/} }
 \setlength\titlebox{6.5cm}    % Expanding the titlebox
 
 \title{Personalized Web Search using different ranking algorithms}
@@ -137,13 +138,20 @@ However, we want to be able to turn features on and off, as well as transform th
 For this we define a configuration file that has all the feature keys defined, with a value of 1 or 0 against it. This indicates that feature the feature is considered(1) or not(0). Since the aggregate features are many, we defined a comma separated string against it. A string of 0,0,1,0,0,0,1,0 indicates that we consider the predicate with value 3 or binary 011 that translates into (Same User-Same Query-Same domain) and so on. Under that we define another 8 bit string that specifies which of click/skipped/missed probabilities and MRR to calculate as features for each of the predicates. When both strings are all 1s, we get a total of 64 aggregate features. \\ 
 We then run a script that reads both the configuration file and the user defined feature file to create a LETOR data set input file per user for the specific combination of features. Now, we can actually run the algorithms on our data.
 \subsection{Details of Tests}
-
-
-
+We ran the four algorithms under 6 sets of feature combinations. The feature combinations are:\\
+-All features turned on (Total 73 features)\\
+-Query Features turned off (position of query in session, number of terms in query, frequency of query) (Total 70 features) \\
+-Aggregate Features turned off (Total 9 features)\\
+-User specific aggregate features on (Vector: 00001111)\\
+-Probability/MRR of Skip, Click, Miss (Vector: 00000111)\\ 
+-Probability/MRR of Skip, Click, Miss (Vector: 11111000)\\ 
 \subsection{Results}
+Thus, from the results, it can be seen that LambdaMART has performed better than all other algorithms, followed closely by Random Forests. AdaRank follows and lastly, Ranknet. Although the NDCG scores reflected for all seem to be close to 1, the difference in performance of the algorithms is clearly observed. The reason of high NDCG scores, is probably because our data set is comparitively small with less data to train on.\\
 
-
-
+Below, is a chart of performance of different algorithms for different feature combinations:\\ 
+\includegraphics[width=25em]{allfeatures}
+%% Write Image 1
+\includegraphics[width=25em]{lvalue}
 
 \subsubsection*{Milestones achieved}
 Out of the milestones, that we had stated, we have successfully managed to get the most optimum feature combination by set/unset of different feature combinations. We have also been able to carry out a comparitive study over 4 different ranking algorithms as we had stated. %% note on problems encountered in the when to personalize module - write about click entropy and why it couldn't be calculated.
