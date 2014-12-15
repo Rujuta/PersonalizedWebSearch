@@ -8,5 +8,5 @@ pos:	1
 terms:	1
 frequency:	1
 score:	1    #always 1
-aggr: 1,1,1,1,1,1,1,1    #001011001	 #(URL, Query, User- For each (miss, skip, click0,click1,click2)- For each ( MRR-Miss, MRR-Skip, MRR-Click ))
+aggr: 0,0,0,0,1,1,1,1    #001011001	 #(URL, Query, User- For each (miss, skip, click0,click1,click2)- For each ( MRR-Miss, MRR-Skip, MRR-Click ))
 l: 1,1,1,1,1,1,1,1
