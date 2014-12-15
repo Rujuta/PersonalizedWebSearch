@@ -58,7 +58,7 @@ def create_file(user_features,feature_set, filename2):
                                f.write(str(no)+":"+str(p)+" ")
                                no+=1
                            i+=1
-                else:
+                elif(k!='aggr'):
                     feature_file[k].replace(" ","")
                     f.write(str(no)+":"+str(feature_file[k])+" ")
                     no+=1
@@ -83,10 +83,14 @@ def get_features_needed(file_name):
                 if(set_on=='1'):
                     features_on[key]=set_on
             elif(key == 'aggr'):
+                    indices = []
                     indices_old=val.split(",")
-                    indices = [int(i) for i, x in enumerate(indices_old) if x == "1"]
-                    if indices == '0':
-                        features_on[key]=[]
+                    x=0
+                    for i in indices_old:
+                        if i=='1':
+                            indices.append[x]
+                        x+=1
+                    features_on[key]=indices
             elif(key == 'l'):
                     indices_old1=val.split(",")
                     indices1 = [int(i) for i, x in enumerate(indices_old1) if x == "1"]
