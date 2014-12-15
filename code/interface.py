@@ -16,10 +16,10 @@ import os
 #section
 history_logs=[]
 
-HISTORY='../data/history_tmp/'
-TRAIN='../data/train_tmp/'
-DEV='../data/dev_tmp/'
-TEST='../data/test_tmp/'
+HISTORY='../data/history/'
+TRAIN='../data/train/'
+DEV='../data/dev/'
+TEST='../data/test/'
 
 query_counts=defaultdict(int)
 query_terms=defaultdict(int)
@@ -35,10 +35,10 @@ print "Loaded history logs"
 
 #Get train logs - fill in train logs after looping through all files in train
 train_logs=[]
-dir_entries=os.listdir(TRAIN)
+dir_entries=os.listdir(TEST)
 dir_entries=sorted(dir_entries)
 for dir_entry in dir_entries:
-    dir_entry_path=os.path.join(TRAIN,dir_entry)
+    dir_entry_path=os.path.join(TEST,dir_entry)
     if os.path.isfile(dir_entry_path):
         train_logs=fileread.read_file(dir_entry_path, train_logs)
 

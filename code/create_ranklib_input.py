@@ -92,8 +92,8 @@ def get_features_needed(file_name):
                     features_on[key]=indices
         return features_on
 
-USER_FILES="../data/user_features/dev/"
-RANKLIB_INPUT='../data/ranklib/dev/'
+USER_FILES="../data/user_features/train/"
+RANKLIB_INPUT='../data/ranklib/train/'
 
 feature_set=get_features_needed('../data/feature_list/list')
 dir_entries_users=os.listdir(USER_FILES)
