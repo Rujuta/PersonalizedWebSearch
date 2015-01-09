@@ -1,10 +1,10 @@
 PersonalizedWebSearch
 =====================
 
-This project aims at personalizing web search rankings of a user by analyzing user search history from Yandex?s search engine logs. We have built a total of 73 features on the log data, different combinations of which are run on Learning to Rank algorithms. We analyze the importance of different features through the NDCG score obtained for different combinations. The algorithms used are - Random Forest, LambdaMART, RankNet and AdaRank for each set of features. Performance is measured using NDCG score.
+This project aims at personalizing web search rankings of a user by analyzing user search history from Yandex's search engine logs. We have built a total of 73 features on the log data, different combinations of which are run on Learning to Rank algorithms. We analyze the importance of different features through the NDCG score obtained for different combinations. The algorithms used are - Random Forest, LambdaMART, RankNet and AdaRank for each set of features. Performance is measured using NDCG score.
 
 References: 
-1. P.Masurel,K.Lefevre-Hasegawa, C.Bourguignat, M.Scordia 2013. Dataikus So-lution to Yandexs Personalized Web Search WSCD
+1. P.Masurel,K.Lefevre-Hasegawa, C.Bourguignat, M.Scordia 2013. Dataikus Solution to Yandex's Personalized Web Search WSCD
 2. http://people.cs.umass.edu/~vdang/ranklib.html
 3. http://en. wikipedia.org/wiki/Learning_to _rank
 4. Fox, S., Karnawat, K., Mydland, M., Dumais, S., & White, T. 2005. Evaluating implicit measures to improve web search. ACM Transactions on Informa-tion Systems . ACM TOIS.
