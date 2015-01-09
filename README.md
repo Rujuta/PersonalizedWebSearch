@@ -1,6 +1,4 @@
 PersonalizedWebSearch
 =====================
 
-A kaggle project that re-ranks web search result based on user's preferences
-
-This is an edit
+Feature Engineering and analysis for personalizing web search. Uses given user search histories to compute an NDCG score of the re-ranked URL List returned for queries per user. Performance is measured through Learning to Rank algorithms.
